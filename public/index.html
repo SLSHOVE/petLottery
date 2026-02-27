@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="description" content="">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="address=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <style>
+    .pc-body {
+      position: relative;
+      background: #fff;
+    }
+
+    .pc-root {
+      overflow-y: auto;
+    }
+
+    .pc-qrcode-wrap {
+      width: 200px;
+      height: 260px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: -220px;
+      background: #fff;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #qrcode {
+      margin-top: 40px;
+      height: 128px;
+      width: 128px;
+    }
+
+    .pc-qrcode-wrap-btn {
+      color: #000;
+      font-size: 14px;
+      font-weight: bold;
+      width: 160px;
+      height: 40px;
+      border-radius: 40px;
+      background: rgba(0, 169, 255, 0.06);
+      line-height: 40px;
+      text-align: center;
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+  <script src="https://staticssl.kugou.com/common/js/react16.9.0.js"></script>
+  <script src="https://staticssl.kugou.com/common/js/react-dom16.9.0.js"></script>
+  <script>
+    function  addQRCodeWrap() {
+      if (document.querySelector('.pc-qrcode-wrap')) return
+      var body = document.getElementById('body');
+      var root = document.getElementById('root');
+
+      if(body) body.className = 'pc-body'
+      if(root) root.className = 'pc-root'
+
+      var qrcodeWrap = document.createElement('div');
+      qrcodeWrap.className = 'pc-qrcode-wrap'
+
+      var qrcode = document.createElement('div');
+      qrcode.id = 'qrcode';
+      qrcodeWrap.appendChild(qrcode);
+
+      var button = document.createElement('div');
+      button.className = 'pc-qrcode-wrap-btn'
+      button.textContent = '扫码体验更佳';
+      qrcodeWrap.appendChild(button);
+
+      body.appendChild(qrcodeWrap);
+      var qrcodeCanvas = new QRCode(document.getElementById("qrcode"), {
+        text: window.location.href,
+        width: 128,
+        height: 128,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+  </script>
+
+  <script>
+    (function () {
+      if (window['__PRERENDER_INJECTED'] || (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) || window.location.href.match('_from=iframe')) {
+        return;
+      }
+      var ua = navigator.userAgent.toLocaleLowerCase();
+      if (ua.indexOf('windows nt') >= 0 || ua.indexOf('mac os') >= 0 || ua.indexOf('linux') >= 0) {
+        window.IS_PC = true
+        var html = document.querySelector("html");
+        var rem = Math.min(html.offsetWidth, 548) / 10; // 配合postcss-px2rem转换px
+        html.style.fontSize = rem + "px";
+        html.style.maxWidth = '548px'
+        html.style.margin = '0 auto'
+        html.style.background = '#414c59'
+        html.style.display = 'inline-block'
+        setTimeout(function () {
+          var script = document.createElement("script");
+          script.src = 'https://staticssl.kugou.com/common/js/qrcode.js';
+          script.onload = function () {
+            addQRCodeWrap()
+          };
+          document.body.appendChild(script);
+        }, 0);
+      }
+    })();
+  </script>
+
+  <script>
+    window.onresize = function () {
+      var html = document.querySelector("html");
+      var rem = html.offsetWidth / 10; // 配合postcss-px2rem转换px
+      html.style.fontSize = rem + "px";
+    }
+    window.onresize();
+  </script>
+  <title>酷狗音乐</title>
+</head>
+
+<body>
+  <div id="body">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <script>
+      if ('serviceWorker' in window.navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(var registration of registrations) {
+            registration.unregister();
+          }
+        }).catch(function(err) {
+          console.error('Service Worker 注销失败: ' + JSON.stringify(err));
+        });
+      }
+    </script>
+    <div id="root"></div>
+  </div>
+  
+  <!-- 骨架屏会插入到这里，如果不用骨架屏，可以删掉下面这句标识 -->
+  <div id="skeleton_replace_holder"></div>
+
+</body>
+
+</html>

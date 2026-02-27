@@ -1,0 +1,20 @@
+{
+  "react": {
+    "rootname": "React"
+  },
+  "react-dom": {
+    "rootname": "ReactDOM"
+  },
+  "@kugou/request": {
+    "rootname": "kGRequest"
+  },
+  "@kugou/get-base-info": {
+    "rootname": "getBaseInfo"
+  },
+  "@kugou/light-mobilecall": {
+    "rootname": "LightMobileCall"
+  },
+  "@kugou/stat": {
+    "rootname": "kgStatObj"
+  }
+}

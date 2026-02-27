@@ -1,0 +1,176 @@
+{
+  "name": "@voo/petLottery",
+  "version": "1.0.0",
+  "description": "宠物抽奖活动",
+  "author": "wildesu",
+  "tags": "示例",
+  "mtpId": "115455",
+  "pmsId": "",
+  "cover": "",
+  "pigeonId": "",
+  "scripts": {
+    "generate-config": "node scripts/generateConfig.js",
+    "generate-entry": "node scripts/generateEntry.js",
+    "generate-subconfig": "node scripts/generateSubConfig.js",
+    "start": "npm run generate-entry && node scripts/start.js",
+    "build": "npm run generate-entry && node scripts/build.js && npm run generate-config",
+    "build-prerender": "npm run generate-entry && cross-env prerender=true node scripts/build.js && npm run generate-config",
+    "publish": "node scripts/publish",
+    "publish-prerender": "cross-env prerender=true node scripts/publish",
+    "g-rule": "node scripts/generateRule.js",
+    "pigeon": "node scripts/pigeon.js",
+    "voo-message": "node scripts/vooMessage.js",
+    "prepare": "husky install",
+    "test": "eslint \"src/**/*.@(js|jsx)\" --fix --max-warnings=0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@babel/core": "7.2.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.16.7",
+    "@kugou/babel-plugin-jsx-xss": "^1.0.2",
+    "@kugou/get-base-info": "^1.0.26",
+    "@kugou/light-mobilecall": "^2.0.24",
+    "@kugou/prerender-spa-plugin": "^1.0.7",
+    "@kugou/stat": "^3.0.8",
+    "@kugou/voo-prop-types": "^1.0.7",
+    "@kugou/webpack": "4.28.4",
+    "@kugou/webpack-skeleton-plugin": "^2.2.2",
+    "@svgr/webpack": "4.1.0",
+    "acorn": "^8.9.0",
+    "axios": "^0.27.2",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "9.0.0",
+    "babel-jest": "23.6.0",
+    "babel-loader": "8.0.5",
+    "babel-plugin-named-asset-import": "^0.3.1",
+    "babel-preset-react-app": "^7.0.2",
+    "bfj": "6.1.1",
+    "case-sensitive-paths-webpack-plugin": "2.2.0",
+    "core-js": "^3.0.1",
+    "cross-env": "^5.2.1",
+    "css-loader": "1.0.0",
+    "dotenv": "6.0.0",
+    "dotenv-expand": "^4.2.0",
+    "es-check": "^6.1.1",
+    "eslint": "5.12.0",
+    "eslint-config-react-app": "^3.0.8",
+    "eslint-loader": "2.1.1",
+    "eslint-plugin-flowtype": "2.50.1",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jsx-a11y": "6.1.2",
+    "eslint-plugin-react": "7.12.4",
+    "file-loader": "2.0.0",
+    "fs-extra": "7.0.1",
+    "hash-sum": "^2.0.0",
+    "html-webpack-plugin": "4.0.0-alpha.2",
+    "husky": "^6.0.0",
+    "identity-obj-proxy": "3.0.0",
+    "jest": "23.6.0",
+    "jest-pnp-resolver": "1.0.2",
+    "jest-resolve": "23.6.0",
+    "jest-watch-typeahead": "^0.2.1",
+    "js-beautify": "^1.11.0",
+    "mini-css-extract-plugin": "0.5.0",
+    "node-sass": "npm:dart-sass@^1.25.0",
+    "optimize-css-assets-webpack-plugin": "5.0.1",
+    "pnp-webpack-plugin": "1.2.1",
+    "postcss-flexbugs-fixes": "4.1.0",
+    "postcss-loader": "3.0.0",
+    "postcss-preset-env": "6.5.0",
+    "postcss-px2rem": "^0.3.0",
+    "postcss-safe-parser": "4.0.1",
+    "react": "16.9.0",
+    "react-app-polyfill": "^0.2.2",
+    "react-dev-utils": "^8.0.0",
+    "react-dom": "16.9.0",
+    "react-loadable": "^5.5.0",
+    "react-redux": "7.1.1",
+    "react-router": "5.1.2",
+    "redux": "4.0.4",
+    "redux-thunk": "2.3.0",
+    "request": "^2.88.0",
+    "resolve": "1.10.0",
+    "sass-loader": "7.1.0",
+    "style-loader": "0.23.1",
+    "terser-webpack-plugin": "1.2.2",
+    "url-loader": "1.1.2",
+    "webpack": "4.28.3",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "3.1.14",
+    "webpack-manifest-plugin": "2.0.4",
+    "workbox-webpack-plugin": "3.6.3",
+    "xss": "^1.0.9"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "resolver": "jest-pnp-resolver",
+    "setupFiles": [
+      "react-app-polyfill/jsdom"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
+    ],
+    "testEnvironment": "jsdom",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ],
+    "watchPlugins": [
+      "d:\\git\\song-sheet\\node_modules\\jest-watch-typeahead\\filename.js",
+      "d:\\git\\song-sheet\\node_modules\\jest-watch-typeahead\\testname.js"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      "@kugou/babel-plugin-jsx-xss"
+    ]
+  },
+  "dependencies": {
+    "@kugou/open-kugou-app": "^5.0.0",
+    "@kugou/request": "^2.2.4"
+  },
+  "useVpublicCache": 1,
+  "checkModule": {
+    "list": [
+      "@kugou/vip-goods"
+    ],
+    "open": true
+  }
+}
