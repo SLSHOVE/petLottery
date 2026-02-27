@@ -6,7 +6,7 @@
   "tags": "示例",
   "mtpId": "115455",
   "pmsId": "",
-  "cover": "",
+  "cover": "https://voowebpbssdl.kugou.com/524d0e246c6932e57b9c07c5f6564526.png",
   "pigeonId": "",
   "scripts": {
     "generate-config": "node scripts/generateConfig.js",
