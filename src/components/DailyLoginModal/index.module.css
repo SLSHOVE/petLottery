@@ -1,0 +1,135 @@
+/* 每日首次登录弹窗样式 - 基于720px设计稿 */
+
+/* 遮罩层 */
+.modalMask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 50px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+  user-select: none;
+  touch-action: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 弹窗容器 */
+.modalContainer {
+  position: relative;
+  width: 660px;
+  height: 575px;
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 关闭按钮 - 位于右侧 */
+.closeBtn {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 20px;
+  top: 140px;
+  cursor: pointer;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+}
+
+.closeBtn:active {
+  transform: scale(0.9);
+}
+
+/* 装饰图案 - 顶部宝藏装饰 */
+.decorImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 660px;
+  height: 354px;
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* 白色背景内容区域 */
+.contentBg {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  width: 660px;
+  height: 455px;
+  /* background: linear-gradient(0deg, rgba(64, 204, 250, 0) 34%, rgba(0, 144, 255, 1) 100%), #FFFFFF; */
+  background-color: #fff;
+  border-radius: 16px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* 文字内容 */
+.textContent {
+  position: absolute;
+  top: 254px; /* 374 - 120 = 254 相对于contentBg */
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1em;
+  color: #000000;
+}
+
+/* 立即挖宝按钮 */
+.confirmBtn {
+  position: absolute;
+  top: 345px; /* 465 - 120 = 345 相对于contentBg */
+  left: 30px;
+  width: 600px;
+  height: 80px;
+  background: #F60950;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.confirmBtn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 按钮文字 */
+.btnText {
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1em;
+  color: #FFFFFF;
+}
