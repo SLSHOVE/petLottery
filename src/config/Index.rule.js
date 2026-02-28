@@ -1,54 +1,154 @@
 const propTypes = require('@kugou/voo-prop-types');
 module.exports = {
-    title: {
-        name: "标题",
-        type: propTypes.string
-    },
-    userinfo: {
-        name: "用户信息",
+    sharePosterConfig: {
+        name: '分享卡片配置',
         type: propTypes.object,
-        dataSourceId: '7281b811-f318-11ea-b64c-95e9dc56fbc7',
         children: {
-            userId: {
-                name: '用户id',
-                type: propTypes.number,
-                isTriggerKey: true
+            title: {
+                name: '分享卡片标题',
+                type: propTypes.string
             },
-            username: {
-                name: "用户名",
-                type: propTypes.string,
-                rejectAs: '$data$.data.userName' 
+            content: {
+                name: '分享卡片副标题',
+                type: propTypes.string
             },
-            age: {
-                name: "年龄",
-                type: propTypes.number,
-                rejectAs: '$data$.data.age'
+            url: {
+                name: '链接降级',
+                type: propTypes.string
             },
-            avatar: {
-                name: "《阿凡达》",
+            img: {
+                name: '分享卡片封面',
                 type: propTypes.img
             },
-            sex: {
-                name: "性",
-                type: propTypes.string
-            }
+            poster: {
+                name: '分享卡片完整海报',
+                type: propTypes.img
+            },
+            withoutQrPoster: {
+                name: '无二维码版分享海报',
+                type: propTypes.string 
+            },
+            xhs_config: [{
+                name: '小红书平台分享配置',
+                type: propTypes.array 
+            }]
         }
     },
-    list: {
-        name: "列表",
+
+    iOS_TARGET_VERSION: {
+        name: 'iOS版本号',
+        type: propTypes.string
+    },
+    Android_TARGET_VERSION: {
+        name: 'Android版本号',
+        type: propTypes.string
+    },
+
+    prizeCopywriting: {
+        name: '奖品文案配置',
+        type: propTypes.object,
+        children: {
+            text2001: {
+                name: '2001配置文案',
+                type: propTypes.string
+            },
+            text2002: {
+                name: '2002配置文案',
+                type: propTypes.string
+            },
+            text2003: {
+                name: '2003配置文案',
+                type: propTypes.string
+            },
+            text3001: {
+                name: '3001配置文案',
+                type: propTypes.string
+                },
+            text3002: {
+                name: '3002配置文案',
+                type: propTypes.string
+            },
+            text1001: {
+                name: '优惠券配置文案',
+                type: propTypes.string
+            },
+            text4001: {
+                name: '宠物道具配置文案',
+                type: propTypes.string
+            },
+            text5001: {
+                name: '福·酷小狗',
+                type: propTypes.string
+            },
+            text5002: {
+                name: '福·雪纳瑞',
+                type: propTypes.string
+            },
+            text5003: {
+                name: '福·哈基米',
+                type: propTypes.string
+            },
+            textDefault: {
+                name: '默认配置文案',
+                type: propTypes.string
+            },
+        }
+    },   
+    useSharePic: {
+        name: '端外分享降级图片',
+        type: propTypes.img
+    },
+    vipUrl: {
+        name: 'Vip链接',
+        type: propTypes.string
+    },
+    SvipUrl: {
+        name: 'Svip链接',
+        type: propTypes.string
+    },
+    petTaskUrl: {
+        name: '宠物任务跳转链接',
+        type: propTypes.string
+    },
+    vipIcon: {
+        name: 'vip按键图标',
+        type: propTypes.img
+    },
+    MILK_TEA_URL: {
+        name:  '奶茶券跳转链接',
+        type: propTypes.string
+    },
+    TAKEAWAY_URL: {
+        name: '外卖券跳转链接',
+        type: propTypes.string
+    },
+    date: {
+        name: '活动时间',
+        type: propTypes.string
+    },
+    digRule: {
+        name: '游戏规则讲解',
         type: propTypes.array,
         children: {
             type: propTypes.object,
             children: {
-                id: {
-                    name: "id",
-                    type: propTypes.number
-                },
-                name: {
-                    name: "的名字",
+                rule: {
+                    name: '规则',
                     type: propTypes.string
                 }
             }
         }
+    },
+    rewardClaimInformation: {
+        name: '奖励领取须知',
+        type: propTypes.string
+    },
+    reward: {
+        name: '活动奖励',
+        type: propTypes.string
+    },
+    otherNotes: {
+        name: '其他说明',
+        type: propTypes.string
     }
 }

@@ -163,8 +163,14 @@
     ]
   },
   "dependencies": {
+    "@cola/KGImage": "^0.2.1",
+    "@cola/Toast": "^2.2.3",
+    "@kugou/kg-loading": "^2.1.2",
+    "@kugou/npm-picture-generator": "^2.0.24",
     "@kugou/open-kugou-app": "^5.0.0",
-    "@kugou/request": "^2.2.4"
+    "@kugou/request": "^2.2.4",
+    "@kugou/share": "^2.2.1",
+    "qrcode": "^1.5.4"
   },
   "useVpublicCache": 1,
   "checkModule": {

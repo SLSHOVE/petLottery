@@ -1,0 +1,121 @@
+.wrap{
+  width: 100%;
+  height: 100vh;
+  background-color: #20A0F3;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.emptyContent {
+    width: auto;
+    height: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    color: #333;
+}
+
+.emptyImage {
+    position: relative;
+    display: flex;
+    /* justify-content: center;
+    text-align: center; */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 50%;
+    width: 300px;
+    height: 300px;
+}
+
+.loginButton {
+    margin-top: 150px;
+    background-color: #1d81e1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    width: 560px;
+    height: 80px;
+    font-size: 40px;
+}
+
+.shareMask{
+    width: 720px;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    /* overflow: hidden; */
+    user-select: none;
+    touch-action: none;
+}
+
+.callButton {
+    bottom: 120px;
+    left:50%;
+    transform: translateX(-50%);
+    background-color: #F60950;
+    color: white;
+    /* border: none; */
+    border-radius: 12px;
+    width: 500px;
+    height: 80px;
+    font-size: 40px;
+    position: absolute;
+    border: 3px solid #000;
+}
+
+/* 共用父容器：相对定位，作为 Header/Tasks 的定位基准 */
+.overlapContainer {
+  position: relative;
+  width: 100%;
+  /* 高度设为 Header 的高度（根据你的实际UI调整，比如600px） */
+  /* height: 2200px;  */
+  box-sizing: border-box;
+  /* padding: 16px; */
+}
+
+/* Header 底层：绝对定位，占满父容器 */
+.headerLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* 底层层级 */
+}
+
+/* Tasks 上层：绝对定位，重叠在 Header 上 */
+.tasksLayer {
+  position: absolute;
+  top: 1168.32px; /* 关键：控制Tasks从Header的哪个位置开始重叠（比如Header下方400px处） */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 678.719970703125px;
+  /* height: 824.6400146484375px; */
+  z-index: 3; /* 上层层级，确保Tasks能点击 */
+  box-sizing: border-box;
+}
+
+.taskBg{
+  position: absolute;
+  width: 720px;
+  top: 1208.64px;
+  z-index: 2;
+}
+
+/* 适配小屏幕（可选） */
+@media (max-width: 375px) {
+  .overlapContainer {
+    min-height: 550px;
+  }
+  .tasksLayer {
+    top: 350px; /* 小屏幕调整重叠位置 */
+  }
+}

@@ -24,42 +24,42 @@ const eventBus = getGlobalEvent();
 const DAILY_LOGIN_MODAL_KEY = 'pettreasure_daily_login_shown3';
 
 // 获取今天的日期字符串 (YYYY-MM-DD)
-const getTodayDateStr = () => {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-};
+// const getTodayDateStr = () => {
+//   const now = new Date();
+//   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+// };
 
 // 检查今天是否已经弹过弹窗
-const hasShownTodayModal = () => {
-  try {
-    const lastShownDate = localStorage.getItem(DAILY_LOGIN_MODAL_KEY);
-    return lastShownDate === getTodayDateStr();
-  } catch (e) {
-    return false;
-  }
-};
+// const hasShownTodayModal = () => {
+//   try {
+//     const lastShownDate = localStorage.getItem(DAILY_LOGIN_MODAL_KEY);
+//     return lastShownDate === getTodayDateStr();
+//   } catch (e) {
+//     return false;
+//   }
+// };
 
 // 记录今天已弹过弹窗
-const markTodayModalShown = () => {
-  try {
-    localStorage.setItem(DAILY_LOGIN_MODAL_KEY, getTodayDateStr());
-  } catch (e) {
-    console.error('Failed to save to localStorage:', e);
-  }
-};
+// const markTodayModalShown = () => {
+//   try {
+//     localStorage.setItem(DAILY_LOGIN_MODAL_KEY, getTodayDateStr());
+//   } catch (e) {
+//     console.error('Failed to save to localStorage:', e);
+//   }
+// };
 
 const data = combineSubmodule('Index');
 
 class Index extends Component {
 
   state = {
-    digNum: 0, // 当前用户剩余挖宝次数
+    // digNum: 0, // 当前用户剩余挖宝次数
     rewardConfig: [], // 奖励配置
     taskConfig: [], // 任务配置
-    grids: [], // 已经挖开的格子
+    // grids: [], // 已经挖开的格子
     tasks: [], // 用户的任务状态
     dataInited: false,
-    showDailyLoginModal: false, // 是否显示每日首次登录弹窗
+    // showDailyLoginModal: false, // 是否显示每日首次登录弹窗
     showRewardModal: false, // 是否显示奖励弹窗
     rewardModalImageWidth: '100%', // 奖励弹窗图片宽度
     rewardModalImage: '', // 奖励弹窗图片
@@ -110,7 +110,7 @@ class Index extends Component {
       const isAdopted = response?.hasAdopt === 1;
       if (!isAdopted) {
         Toast.info({ 
-          content: "请先领养宠物再来挖宝吧~",
+          content: "请先领养宠物再来抽奖吧~",
           duration: 2500 
         });
         const targetTab = 0;
@@ -176,7 +176,7 @@ initData = async () => {
       res = await getDigInfo();
       if (res?.data?.code === 0) {
         const data = res?.data?.data || {};
-        const digNum = data.digNum || 0;
+        // const digNum = data.digNum || 0;
         const endTime = data.config?.endTime;
         const isActivityOver = this.checkActivityEndByApi(endTime);
         if (isActivityOver) {
@@ -194,12 +194,12 @@ initData = async () => {
           dataInited: true,
           rewardConfig: data.config?.rewardConfig || [],
           taskConfig: data.config?.taskConfig || [],
-          grids: data.grids || [],
+          // grids: data.grids || [],
           tasks: data.tasks || [],
-          digNum,
+          // digNum,
           isLoginLoading: false
         }, () => {
-          this.checkAndShowDailyLoginModal();
+          // this.checkAndShowDailyLoginModal();
           this.transRewardConfig(data.config?.rewardConfig || []);
         });
       apmLog({
@@ -243,14 +243,14 @@ initData = async () => {
   }
 };
   // 检查并显示每日登录弹窗
-  checkAndShowDailyLoginModal = () => {
-    const { digNum, dataInited, grids } = this.state;
-    // 条件：当天没有弹过 && digNum >= 1 && dataInited = true
-    if (dataInited && digNum >= 1 && !hasShownTodayModal() && grids.length < 54) {
-      this.setState({ showDailyLoginModal: true });
-      markTodayModalShown();
-    }
-  }
+  // checkAndShowDailyLoginModal = () => {
+  //   const { digNum, dataInited, grids } = this.state;
+  //   // 条件：当天没有弹过 && digNum >= 1 && dataInited = true
+  //   if (dataInited && digNum >= 1 && !hasShownTodayModal() && grids.length < 54) {
+  //     this.setState({ showDailyLoginModal: true });
+  //     markTodayModalShown();
+  //   }
+  // }
 
    initClientPageListener = () => {
     LightMobileCall.KgWebMobileCall("KgWebMobileCall.shareStatus", (res) => {
@@ -290,7 +290,7 @@ initData = async () => {
     document.addEventListener('visibilitychange', this.handleBrowserVisibilityChange);
     window._kg_opendata_ = {
       page: "活动页",
-      activityName: "养狗春节挖宝" || document.title,
+      activityName: "养狗品牌合作抽奖" || document.title,
       activityId: "" || window._VO_ACT_ID_,
       codeSystem: "voo",
       channel: "",
@@ -302,7 +302,7 @@ initData = async () => {
     mobileLog({
           a: 23320002,
           b: '曝光',
-          ft: '春节挖宝各页面',
+          ft: '春节抽奖各页面',
           r: '养狗',
           svar1: '1'
         });
@@ -403,7 +403,7 @@ initData = async () => {
     if (this._baseInfo?.userid) return;
 
     const loginParams = {
-      topicName: "养狗春节挖宝",
+      topicName: "养狗品牌合作抽奖",
       loginType: '',
       popupType: 1,
     };
@@ -554,30 +554,30 @@ initData = async () => {
     document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange); // 新增
   }
 
-  // 获取奖励
-  onGotPrize = (rewardId, gridInfo) => {
-    // 啥也没挖到
-    if (gridInfo?.rewardId === 0) {
-      Toast.info({
-        content: '很遗憾，没有挖到宝物'
-      });
-      return;
-    } else if (rewardId > 0) {
-      const isCard = rewardId === 2001 || rewardId === 2002 || rewardId === 2003 || rewardId === 3001 || rewardId === 3002;
-      const rewardItem = this._rewardConfigMap[rewardId];
-      const rewardTitle = `恭喜获得「${rewardItem?.rewardDesc}」`;
-      const rewardSubtitle = this.getRewardSubtitle(rewardId);
-      this.setState({ 
-        showRewardModal: true,
-        rewardModalImageWidth: (rewardId === 2001 || rewardId === 2002 || rewardId === 2003) ? '100%' : '50%',
-        rewardModalImage: prizeMap[rewardId + '']?.src,
-        currentRewardId: rewardId,
-        rewardModalBtnText: isCard ? '立即查看' : '立即领取',
-        rewardModalTitle: rewardTitle,
-        rewardModalSubtitle: rewardSubtitle
-      });
-    }
-  }
+  // 获取奖励，挖宝核心方法
+  // onGotPrize = (rewardId, gridInfo) => {
+  //   // 啥也没挖到
+  //   if (gridInfo?.rewardId === 0) {
+  //     Toast.info({
+  //       content: '很遗憾，没有挖到宝物'
+  //     });
+  //     return;
+  //   } else if (rewardId > 0) {
+  //     const isCard = rewardId === 2001 || rewardId === 2002 || rewardId === 2003 || rewardId === 3001 || rewardId === 3002;
+  //     const rewardItem = this._rewardConfigMap[rewardId];
+  //     const rewardTitle = `恭喜获得「${rewardItem?.rewardDesc}」`;
+  //     const rewardSubtitle = this.getRewardSubtitle(rewardId);
+  //     this.setState({ 
+  //       showRewardModal: true,
+  //       rewardModalImageWidth: (rewardId === 2001 || rewardId === 2002 || rewardId === 2003) ? '100%' : '50%',
+  //       rewardModalImage: prizeMap[rewardId + '']?.src,
+  //       currentRewardId: rewardId,
+  //       rewardModalBtnText: isCard ? '立即查看' : '立即领取',
+  //       rewardModalTitle: rewardTitle,
+  //       rewardModalSubtitle: rewardSubtitle
+  //     });
+  //   }
+  // }
 
   scrollToBottom = () => {
     document.querySelector('#page').scrollTo({
@@ -633,8 +633,8 @@ initData = async () => {
       this.scrollToBottom()
       const isAllTaskDone = this.isAllTasksCompleted();
       const tipText = isAllTaskDone 
-        ? '今天的任务已经都做完啦，明天再来挖宝吧！' 
-        : '暂无挖宝机会，快来做任务获取吧~';
+        ? '今天的任务已经都做完啦，明天再来抽奖吧！' 
+        : '暂无抽奖机会，快来做任务获取吧~';
       Toast.fail(tipText);
       return false;
     }
@@ -666,7 +666,7 @@ initData = async () => {
         page: getbaseInfo?.userid || 0
       });
       toast.remove();
-      Toast.fail(`挖宝失败，请稍后重试`);
+      Toast.fail(`抽奖失败，请稍后重试`);
     });
     toast.remove();
     if (res?.data?.code === 0) {
@@ -686,10 +686,10 @@ initData = async () => {
           page: 0
         });
       } else if (res?.data?.code === 100500) {
-        Toast.fail(`暂无挖宝机会，快来做任务获取吧~`);
+        Toast.fail(`暂无抽奖机会，快来做任务获取吧~`);
         return false;
       } else {
-        Toast.fail(`挖宝失败，请稍后重试`);
+        Toast.fail(`抽奖失败，请稍后重试`);
         return false;
       }
       return true;
@@ -706,15 +706,15 @@ initData = async () => {
   }
 
   // 关闭每日登录弹窗
-  handleCloseDailyLoginModal = () => {
-    this.setState({ showDailyLoginModal: false });
-  }
+  // handleCloseDailyLoginModal = () => {
+  //   this.setState({ showDailyLoginModal: false });
+  // }
 
   // 点击立即挖宝按钮
-  handleDailyLoginConfirm = () => {
-    this.setState({ showDailyLoginModal: false });
-    // 可以在这里添加滚动到挖宝区域等逻辑
-  }
+  // handleDailyLoginConfirm = () => {
+  //   this.setState({ showDailyLoginModal: false });
+  //   // 可以在这里添加滚动到挖宝区域等逻辑
+  // }
 
   handleCloseRewardModal = () => {
     this.setState({ showRewardModal: false });
@@ -764,36 +764,59 @@ initData = async () => {
     
     const mainContent = (
     <>
-      {LightMobileCall.isInClient() ? <Titlebar bgMusic= 'https://webfile.yun.kugou.com/fmt01_600dc8816ce86a7de422299da914f786.mp3' iconColor="#fff" useSharePic={useSharePic} showShare={true} shareConfig={sharePosterConfig}/> : null }
-      <Header
-        chanceCount={digNum}
-        rewardConfig={rewardConfig}
-        grids={grids}
-        showDailyLoginModal={showDailyLoginModal}
-        onCellClick={this.handleCellClick}
-        dataInited={dataInited}
-        onRuleClick={this.handleRuleClick}
-        onPrizeClick={this.handlePrizeClick}
-      />
-      <Tasks tasks={tasks} 
-        taskConfig={taskConfig} 
-        shareConfig={sharePosterConfig} 
-        vipUrl={vipUrl} 
-        SvipUrl={SvipUrl} 
-        petTaskUrl={petTaskUrl} 
-        vipIcon={vipIcon} 
+      {LightMobileCall.isInClient() ? 
+      <Titlebar 
+        // bgMusic= 'https://webfile.yun.kugou.com/fmt01_600dc8816ce86a7de422299da914f786.mp3' 
+        iconColor="#fff" 
         useSharePic={useSharePic} 
-        isTaskSubmitting={this.state.isTaskSubmitting} 
-        iOS_TARGET_VERSION={iOS_TARGET_VERSION}
-        Android_TARGET_VERSION={Android_TARGET_VERSION}
-        />
+        showShare={true} 
+        shareConfig={sharePosterConfig}
+      /> : null }
+      <div className={styles.overlapContainer}>
+      {/* Header 作为底层 */}
+        <div className={styles.headerLayer}>
+          <Header
+            chanceCount={digNum}
+            rewardConfig={rewardConfig}
+            grids={grids}
+            showDailyLoginModal={showDailyLoginModal}
+            onCellClick={this.handleCellClick}
+            dataInited={dataInited}
+            onRuleClick={this.handleRuleClick}
+            onPrizeClick={this.handlePrizeClick}
+          />
+        </div>
+        
+        {/* Tasks 作为上层，重叠在 Header 上 */}
+        <div className={styles.tasksLayer}>
+          <Tasks tasks={tasks} 
+            taskConfig={taskConfig} 
+            shareConfig={sharePosterConfig} 
+            vipUrl={vipUrl} 
+            SvipUrl={SvipUrl} 
+            petTaskUrl={petTaskUrl} 
+            vipIcon={vipIcon} 
+            useSharePic={useSharePic} 
+            isTaskSubmitting={this.state.isTaskSubmitting} 
+            iOS_TARGET_VERSION={iOS_TARGET_VERSION}
+            Android_TARGET_VERSION={Android_TARGET_VERSION}
+          />
+        </div>
+        <div>
+          <img
+            src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
+            className={styles.taskBg}
+            alt=''
+          />
+        </div>
+      </div>
       
       {/* 每日首次登录弹窗 */}
-      <DailyLoginModal
+      {/* <DailyLoginModal
         visible={showDailyLoginModal}
         onClose={this.handleCloseDailyLoginModal}
         onConfirm={this.handleDailyLoginConfirm}
-      />
+      /> */}
       <SharePoster shareConfig={sharePosterConfig} />
       <RewardModal
         visible={showRewardModal}
