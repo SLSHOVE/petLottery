@@ -175,6 +175,14 @@ export const handleSharePic = ({
           type: 4,
           img: completeBase64,
         //   ...defaultShareConfig,
+        url: defaultShareConfig.url,
+        title: defaultShareConfig.title,
+        content: defaultShareConfig.content,
+        copyContent: defaultShareConfig.copyContent,
+        showXhs: defaultShareConfig.showXhs !== undefined ? defaultShareConfig.showXhs : 1,
+        xhsTitle: defaultShareConfig.xhsTitle || '来酷狗领狗粮',
+        xhsContent: defaultShareConfig.xhsContent || '酷狗X贵族发狗粮啦！大把宠物福利等你来抽~',
+        xhsPicUrl: defaultShareConfig.xhsPicUrl || '',
         };
 
         share.resetShareData(finalConfig);

@@ -1,6 +1,7 @@
 import KGRequest from '@kugou/request';
 import { baseInfo } from '../../utils/util';
 
+// 通用请求函数（保留，抽奖接口复用）
 const fxRequest = async (options) => {
     const userBaseInfo = await baseInfo()
     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
@@ -19,10 +20,9 @@ const fxRequest = async (options) => {
         ...(options?.headers || []),
     ]
     const requestOptions = {
-        // TODO 正式服还得改改
-        // https://fx.service.kugou.com 
-        // https://fxapi.test.tmeoa.com'
-        baseURL: 'https://fx.service.kugou.com',
+        // TODO 正式服替换为：https://fx.service.kugou.com
+        // 测试服：https://fxapi.test.tmeoa.com
+        baseURL: 'https://fxapi.test.tmeoa.com',
         isGateway: false,
         ...options,
         headers,
@@ -31,78 +31,7 @@ const fxRequest = async (options) => {
     return KGRequest(requestOptions)
 }
 
-
-//https://doc.weixin.qq.com/doc/w3_AQ8A5QahACQCN0UiJwShSR0CvVwbV?scode=AOYA2wdwAA8V0Mil89&version=5.0.3.6005&platform=win
-export async function getDigInfo() {
-    const userBaseInfo = await baseInfo();
-    const res = await fxRequest({
-        method: 'GET',
-        url: '/kugoupet/activity/digInfo',
-        data: {
-            userid: userBaseInfo.userid,
-            token: userBaseInfo.token
-        }
-    });
-    return res;
-}
-
-// https://doc.weixin.qq.com/doc/w3_AQ8A5QahACQCN0UiJwShSR0CvVwbV?scode=AOYA2wdwAA8V0Mil89&version=5.0.3.6005&platform=win
-// gridId 格子id 0 ~ 53
-export async function openDig(gridId = 0) {
-    const userBaseInfo = await baseInfo();
-    const res = await fxRequest({
-        method: 'POST',
-        url: '/kugoupet/activity/digGridOpen',
-        data: {
-            userid: userBaseInfo.userid,
-            token: userBaseInfo.token,
-            gridId
-        }
-    });
-    return res;
-}
-
-export async function taskReward(taskId = 0) {
-    const userBaseInfo = await baseInfo();
-    const res = await fxRequest({
-        method: 'POST',
-        url: '/kugoupet/activity/digTaskReward',
-        data: {
-            userid: userBaseInfo.userid,
-            token: userBaseInfo.token,
-            taskId
-        }
-    });
-    return res;
-}
-
-export async function DigTaskComplete(taskId = 0) {
-    const userBaseInfo = await baseInfo();
-    const res = await fxRequest({
-        method: 'POST',
-        url: '/kugoupet/activity/digTaskComplete',
-        data: {
-            userid: userBaseInfo.userid,
-            token: userBaseInfo.token,
-            taskId
-            }
-    });
-    return res;
-}
-// https://doc.weixin.qq.com/doc/w3_AQ8A5QahACQCN0UiJwShSR0CvVwbV?scode=AOYA2wdwAA8V0Mil89&version=5.0.3.6005&platform=win
-export async function getDigRewardList() {
-    const userBaseInfo = await baseInfo();
-    const res = await fxRequest({
-        method: 'GET',
-        url: '/kugoupet/activity/digRewardList',
-        data: {
-            userid: userBaseInfo.userid,
-            token: userBaseInfo.token
-        }
-    });
-    return res;
-}
-
+// 宠物接口专用请求函数（保留，宠物领养检查用）
 const fxRequest1 = async (options) => {
     const userBaseInfo = await baseInfo()
     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
@@ -121,7 +50,7 @@ const fxRequest1 = async (options) => {
         ...(options?.headers || []),
     ]
     const requestOptions = {
-        // TODO 正式服还得改改
+        // TODO 正式服替换为：https://fx.service.kugou.com
         baseURL: 'https://fx.service.kugou.com',
         isGateway: false,
         ...options,
@@ -131,9 +60,110 @@ const fxRequest1 = async (options) => {
     return KGRequest(requestOptions)
 }
 
+// ====================== 新增：抽奖相关接口（替换原挖宝接口） ======================
+
+/**
+ * 获取抽奖信息（原getDigInfo替换）
+ * @method GET
+ * @url /kugoupet/activity/lotteryInfo
+ * @return {Promise} 响应包含：LotteryNum(抽奖次数)、startTime/endTime(活动时间)、tasks(任务列表)
+ */
+export async function getLotteryInfo() {
+    const userBaseInfo = await baseInfo();
+    const res = await fxRequest({
+        method: 'GET',
+        url: '/kugoupet/activity/lotteryInfo',
+        data: {
+            userid: userBaseInfo.userid,
+            token: userBaseInfo.token
+        }
+    });
+    return res;
+}
+
+/**
+ * 领取抽奖任务奖励（原DigTaskComplete/taskReward替换）
+ * @method POST
+ * @url /kugoupet/activity/lotteryTaskReward
+ * @param {number} taskId - 任务ID（必填）
+ * @return {Promise} 响应包含：taskInfo(任务信息)、addLotteryNum(新增抽奖次数)、lotteryNum(当前抽奖次数)
+ */
+export async function lotteryTaskReward(taskId = 0) {
+    const userBaseInfo = await baseInfo();
+    const res = await fxRequest({
+        method: 'POST',
+        url: '/kugoupet/activity/lotteryTaskReward',
+        data: {
+            userid: userBaseInfo.userid,
+            token: userBaseInfo.token,
+            taskId // 接口必填：要领取的任务ID
+        }
+    });
+    return res;
+}
+
+/**
+ * 发起抽奖（原openDig替换）
+ * @method POST
+ * @url /kugoupet/activity/lottery
+ * @return {Promise} 响应包含：rewardId(奖励ID)、rewardType(奖励类型)、name(奖励名称)等
+ */
+export async function lottery() {
+    const userBaseInfo = await baseInfo();
+    const res = await fxRequest({
+        method: 'POST',
+        url: '/kugoupet/activity/lottery',
+        data: {
+            userid: userBaseInfo.userid,
+            token: userBaseInfo.token,
+            // 接口要求请求体为空对象，此处仅传用户鉴权信息
+        }
+    });
+    return res;
+}
+
+/**
+ * 获取抽奖奖励列表
+ * @method GET
+ * @url /kugoupet/activity/lotteryRewardList
+ * @return {Promise} 响应包含：rewardList(奖励记录列表)
+ */
+export async function getLotteryRewardList() {
+    const userBaseInfo = await baseInfo();
+    const res = await fxRequest({
+        method: 'GET',
+        url: '/kugoupet/activity/lotteryRewardList',
+        data: {
+            userid: userBaseInfo.userid,
+            token: userBaseInfo.token
+        }
+    });
+    return res;
+}
+
+/**
+ * 任务完成上报
+ * @method POST
+ * @url /kugoupet/activity/lotteryTaskComplete
+ * @param {number} taskId - 任务ID（必填）
+ * @return {Promise} 响应包含：code(状态码)、msg(提示)、data(数据)
+ */
+export async function lotteryTaskComplete(taskId = 0) {
+    const userBaseInfo = await baseInfo();
+    const res = await fxRequest({
+        method: 'POST',
+        url: '/kugoupet/activity/lotteryTaskComplete',
+        data: {
+            userid: userBaseInfo.userid,
+            token: userBaseInfo.token,
+            taskId: Number(taskId) // 确保是number类型，符合接口要求
+        }
+    });
+    return res;
+}
+
 export async function getPetChatInfoCore() {
     try {
-        // 发起GET请求，调用酷狗宠物公开接口获取聊天信息
         const res = await fxRequest1({
             method: 'get',
             url: '/kugoupet/public/chatInfo',
@@ -156,137 +186,3 @@ export async function getPetChatInfoCore() {
         return [null, err];
     }
 }
-
-// /**
-//  * @typedef {Object} SubmitTaskData
-//  * @property {Object} data - 任务提交结果数据
-//  */
-
-// /**
-//  * @typedef {Object} SubmitTaskResponse
-//  * @property {number} status - 请求状态。0：失败；1：成功
-//  * @property {number} errcode - 错误码
-//  * @property {string} errmsg - 错误信息
-//  * @property {SubmitTaskData} data - 任务提交结果数据
-//  */
-
-// /**
-//  * 完成任务上报
-//  * @description 测试环境: 10.17.8.33 activity.mobile.kugou.com, 预发布环境: 10.16.4.149 activity.mobile.kugou.com
-//  * @param {Object} params - 请求参数
-//  * @param {number} params.taskid - 任务ID
-//  * @param {number} params.activity_id - 活动ID
-//  * @returns {Promise<SubmitTaskResponse>} 返回任务提交结果
-//  */
-// export async function submitTask(params) {
-//     const initBaseInfo = await baseInfo();
-
-//     const queryParams = {
-//         appid: initBaseInfo.appid,
-//         clientver: initBaseInfo.clientver,
-//         clienttime: Date.now().toString(),
-//         mid: initBaseInfo.mid,
-//         uuid: initBaseInfo.uuid,
-//         dfid: initBaseInfo.dfid,
-//         userid: initBaseInfo.userid,
-//         token: initBaseInfo.token
-//     };
-
-//     const postData = {
-//         taskid: params.taskid,
-//         activity_id: params.activity_id
-//     };
-
-//     return new Promise((resolve, reject) => {
-//         KGRequest({
-//             isAllowKGAntiBush: false,
-//             isAllowSign: true,
-//             sign: 'h5',
-//             useMobileCall: LightMobileCall.isInClient(),
-//             method: 'post',
-//             params: queryParams,
-//             data: postData,
-//             baseURL: 'https://theme.activity.kugou.com',
-//             url: '/v1/theme_act_task/submit',
-//             timeout: 10000,
-//             isGateway: true,
-//             headers: [{
-//                 'Content-Type': 'application/json',
-//             }]
-//         }).then((res_msg) => {
-//             resolve(res_msg);
-//         }).catch((err) => {
-//             reject(err);
-//         });
-//     });
-// }
-
-// export async function getThemeActTaskStatus(params) {
-//     const initBaseInfo = await baseInfo();
-
-//     const queryParams = {
-//         appid: initBaseInfo.appid,
-//         clientver: initBaseInfo.clientver,
-//         clienttime: Date.now().toString(),
-//         mid: initBaseInfo.mid,
-//         uuid: initBaseInfo.uuid,
-//         dfid: initBaseInfo.dfid,
-//         userid: initBaseInfo.userid,
-//         token: initBaseInfo.token
-//     };
-
-//     return new Promise((resolve, reject) => {
-//         KGRequest({
-//             isAllowKGAntiBush: false,
-//             isAllowSign: true,
-//             sign: 'h5',
-//             useMobileCall: LightMobileCall.isInClient(),
-//             method: 'get',
-//             params: queryParams,
-//             baseURL: 'https://theme.activity.kugou.com',
-//             url: '/v1/theme_act_task/submit',
-//             timeout: 10000,
-//             isGateway: true,
-//         }).then((res_msg) => {
-//             resolve(res_msg);
-//         }).catch((err) => {
-//             reject(err);
-//         });
-//     });
-// };
-
-// export async function getNewTaskConfig(params) {
-//     const initBaseInfo = await baseInfo();
-
-//     const queryParams = {
-//         appid: initBaseInfo.appid,
-//         clientver: initBaseInfo.clientver,
-//         clienttime: Date.now().toString(),
-//         mid: initBaseInfo.mid,
-//         uuid: initBaseInfo.uuid,
-//         dfid: initBaseInfo.dfid,
-//         userid: initBaseInfo.userid,
-//         token: initBaseInfo.token
-//     };
-
-//     return new Promise((resolve, reject) => {
-//         KGRequest({
-//             isAllowKGAntiBush: false,
-//             isAllowSign: true,
-//             sign: 'h5',
-//             useMobileCall: LightMobileCall.isInClient(),
-//             method: 'get',
-//             params: queryParams,
-//             baseURL: '',
-//             url: '',
-//             timeout: 10000,
-//             isGateway: true,
-//         }).then((res_msg) => {
-//             resolve(res_msg);
-//         }).catch((err) => {
-//             reject(err);
-//         });
-//     });
-// };
-
-

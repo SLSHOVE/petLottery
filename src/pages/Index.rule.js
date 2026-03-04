@@ -5,6 +5,7 @@ import combineSubmodule from '../utils/combineSubmodule';
 import Titlebar from '../components/titlebar';
 import LightMobileCall from '@kugou/light-mobilecall';
 import mobileLog from '../utils/mobileLog';
+import ruleImg from '../assets/image/rule/ruleImg.png'
 const data = combineSubmodule('Index');
 
 class Rule extends Component {
@@ -21,15 +22,14 @@ class Rule extends Component {
   }
 
   render() {
-    const rule = this.props.digRule;
+    // const rule = this.props.digRule;
     // const date = this.props.date
 
     return (
       <div className={styles.wrap}>
-        {LightMobileCall.isInClient() ? <Titlebar title="活动规则" showPlaceHolder={true} /> : null}
+        {LightMobileCall.isInClient() ? <Titlebar title="活动规则" showPlaceHolder={true} iconColor="#000000"/> : null}
         
-        <div className={styles.content}>
-          {/* 活动时间 */}
+        {/* <div className={styles.content}>
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>活动时间</h3>
             <div className={styles.sectionContent}>
@@ -37,7 +37,6 @@ class Rule extends Component {
             </div>
           </div>
 
-          {/* 挖宝机会获取 */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>挖宝机会获取</h3>
             <div className={styles.sectionContent}>
@@ -47,7 +46,6 @@ class Rule extends Component {
             </div>
           </div>
 
-          {/* 奖励领取须知 */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>奖励领取须知</h3>
             <div className={styles.sectionContent}>
@@ -55,7 +53,6 @@ class Rule extends Component {
             </div>
           </div>
 
-          {/* 活动奖励 */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>活动奖励</h3>
             <div className={styles.sectionContent}>
@@ -63,14 +60,21 @@ class Rule extends Component {
             </div>
           </div>
 
-          {/* 其他说明 */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>其他说明</h3>
             <div className={styles.sectionContent}>
               {this.props.otherNotes}
             </div>
           </div>
+        </div> */}
+        <div className={styles.ruleBox}>
+          <img
+          className={styles.ruleImg}
+          src={ruleImg}
+          alt=''
+        />
         </div>
+        
       </div>
     )
   }

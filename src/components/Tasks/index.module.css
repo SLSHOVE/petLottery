@@ -112,18 +112,20 @@
     background-size: contain;
 }
 .finishBtn{
-    width: 140px;
-    height: 50px;
+    width: 98.6px;
+    height: 44px;
     padding: 8px 16px;
-    border-radius: 20px;
+    border-radius: 5.28px;
     /* background: #ff3e3e; */
-    color: #888888;
+    color: #984610;
+    opacity: 0.6;
     border: none;
     font-size: 22px;
     font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
     gap: 4px;
     cursor: pointer;
      -webkit-tap-highlight-color: transparent;

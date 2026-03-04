@@ -1,0 +1,131 @@
+/* 弹窗容器 */
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 内容容器 */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 720px;
+}
+
+/* 关闭按钮 - 右上角 */
+.closeBtn {
+  position: absolute;
+  top: 92px;
+  right: 50px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.closeBtn svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* .exchangeContent {
+  position: relative;
+  width: 600px;
+  margin-top: 177px;
+  border-radius: 15px;
+  background: #1a1a1a;
+  padding: 40px 30px;
+  color: #ffffff;
+  text-align: center;
+} */
+
+.prize {
+  position: absolute;
+  top: 428.64px;
+  width: 274.77px;
+  height: 446.43px;
+  pointer-events: none;
+}
+
+.exchangeTitle {
+  position: absolute;
+  top: 941px;
+  color: #fff;
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 44px;
+  margin-bottom: 30px;
+}
+
+.codeRow {
+  position: absolute;
+  top: 1027px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.codeLabel {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 28px;
+  color: #fff;
+}
+
+.codeText {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 28px;
+  color: #ffffff;
+}
+
+/* 复制按钮 */
+.copyBtn {
+  font-size: 28px;
+  font-weight: 500;
+  color: #1677ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tipText {
+  position: absolute;
+  top: 1348px;
+  font-size: 24px;
+  line-height: 44px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 40px;
+}
+
+/* 去兑换按钮 */
+.exchangeBtn {
+  width: 600px;
+  height: 89px;
+  position: absolute;
+  top: 1239px;
+  background: linear-gradient(to right, #30EAFD 0%, #0C81FF 100%);
+  border-radius: 12px;
+  border: none;
+  font-size: 36px;
+  font-weight: 500;;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}

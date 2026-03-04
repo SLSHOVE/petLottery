@@ -1,11 +1,17 @@
+body{
+    height: 100vh;
+    overflow: hidden;
+}
+
 .wrap {
-    min-height: 100vh;
-    background-color: #FFEAE5;
-    background-image: url('../assets/image/rule/bg.png');
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: 100% auto;
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+    overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* 内容区域 */
@@ -49,4 +55,15 @@
 
 .sectionContent p:last-child {
     margin-bottom: 0;
+}
+
+.ruleBox{
+    overflow-y: auto;
+    height: 1410px;
+    width: 100%;
+}
+
+.ruleImg{
+    width: 100%;
+    display: block;
 }

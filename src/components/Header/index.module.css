@@ -1,14 +1,27 @@
-/* 头部组件样式 - 基于720px设计稿 */
 .header {
   width: 100%;
   position: relative;
-  /* 设置高度确保下方内容不会挤上来 */
-  /* 红色背景框top:632px + 内边距111px + 格子862px + 内边距35px + 底部间距 */
   min-height: 1680px;
   background-color: #9DCAFA;
 }
 
-/* ========== 气泡动画 ========== */
+.headerContent {
+  width: 100%;
+  position: relative;
+  min-height: 1680px;
+}
+
+.loading {
+  width: 100%;
+  height: 1680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #955616;
+  background: linear-gradient(to bottom, #9DCAFA 0%, #20A0F3 100%);
+}
+
 .bubblesContainer {
   position: absolute;
   top: 0;
@@ -20,37 +33,21 @@
   overflow: hidden;
 }
 
-.loading {
-  width: 100%;
-  height: 1680px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: #955616;
-  /* background: #FFF3D8;  */
-  background: linear-gradient(to bottom, #9DCAFA 0%, #20A0F3 100%);
-
-}
-
 .bubble {
   position: absolute;
   width: 75.84px;
   height: 75.84px;
   object-fit: contain;
   pointer-events: none;
-  /* 图片切换时的淡入淡出效果 */
   transition: opacity 0.5s ease-in-out;
 }
 
-/* 左边气泡 - 上移10px-下移10px(5秒)循环 */
 .bubbleLeft {
   left: 31.68px;
   top: 430.08px;
   animation: bubbleLeftFloat 5s ease-in-out infinite;
 }
 
-/* 中间气泡 - 下移20px-上移20px(6秒)循环 */
 .bubbleMiddle {
   left: 584.64px;
   top: 332.88px;
@@ -58,53 +55,30 @@
   animation: bubbleMiddleFloat 6s ease-in-out infinite;
 }
 
-/* 右边气泡 - 下移20px-上移20px(7秒)循环 */
 .bubbleRight {
   left: 610.56px;
   top: 457.92px;
   animation: bubbleRightFloat 7s ease-in-out infinite;
 }
 
-/* 左边气泡动画：上移10px → 下移10px */
 @keyframes bubbleLeftFloat {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
 }
 
-/* 中间气泡动画：下移20px → 上移20px */
 @keyframes bubbleMiddleFloat {
-  0% {
-    transform: translateX(-50%) translateY(0);
-  }
-  50% {
-    transform: translateX(-50%) translateY(20px);
-  }
-  100% {
-    transform: translateX(-50%) translateY(0);
-  }
+  0% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(20px); }
+  100% { transform: translateX(-50%) translateY(0); }
 }
 
-/* 右边气泡动画：下移20px → 上移20px */
 @keyframes bubbleRightFloat {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(20px); }
+  100% { transform: translateY(0); }
 }
 
-/* ========== 右侧悬浮按钮 - 活动规则 & 我的奖品 ========== */
 .sideButtons {
   position: absolute;
   top: 190.64px;
@@ -127,7 +101,6 @@
   opacity: 0.8;
 }
 
-/* 背景图 - banner整体 */
 .bannerBg {
   width: 100%;
   height: auto;
@@ -137,60 +110,81 @@
   pointer-events: none;
 }
 
-/* 中间过渡背景 - 衔接banner-bg */
-.middleBg {
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-  z-index: 96;
-  pointer-events: none;
-  /* 向上偏移一点，与banner-bg底部衔接 */
-  top: 170px;
-}
-
 .lightImg {
   position: absolute;
-  top:636.48px;
+  top: 636.48px;
   width: 432px;
   z-index: 100;
   left: 50%;
   transform: translateX(-50%);
 }
 
+.prizeGrid, .prizeGrid1, .prizeGrid2 {
+  position: absolute;
+  top: 687px;
+  width: 100px;
+  height: 135px;
+  z-index: 101;
+  overflow: hidden;
+  border-radius: 8px;
+  /* background-color: #955616; */
+}
+
+.prizeGrid { left: 172px; }
+.prizeGrid1 { left: 312px; }
+.prizeGrid2 { left: 452px; }
+
+.prizeImg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.8s cubic-bezier(0.2, 0.6, 0.4, 1);
+  transform: translateY(0);
+}
+
+.rolling {
+  animation: rollFull 0.15s linear infinite;
+  transition: none;
+}
+
+@keyframes rollFull {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
 .raffleBtn {
-  background-color: #222;
+  background-color: transparent;
   width: 290px;
   height: 90px;
   position: absolute;
-  top:954.48px;
+  top: 954.48px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
   border-radius: 40px;
   opacity: 0.7;
+  border: none;
+  cursor: pointer;
+  /* transition: opacity 0.3s ease; */
 }
 
-/* ========== 标题栏 - 与背景融合，无独立背景 ========== */
+.raffleBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .chanceBar {
   position: absolute;
   top: 1111.68px;
   left: 25px;
   width: 670px;
-  /* height: 100px; */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 45px 0 50px;
   box-sizing: border-box;
   z-index: 99;
-  /* 无背景色，与banner图片融合 */
-}
-
-.chanceContent {
-  display: flex;
-  align-items: center;
-  position: relative;
 }
 
 .chanceLabel {
@@ -204,24 +198,8 @@
   align-items: center;
 }
 
-.chanceCount {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 17px;
-  padding: 8px 16px;
-}
-
-.chanceIcon {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
 .chanceNum {
   font-family: 'Impact','PingFang SC', sans-serif;
-  font-style: Regular;
   font-size: 30.72px;
   font-weight: 400;
   line-height: 36px;
@@ -231,244 +209,4 @@
   color: transparent;
   text-shadow: none;
   margin: 0 10px;
-}
-
-/* ========== 格子区域 ========== */
-.gridSection {
-  position: absolute;
-  top: 632px;
-  left: 0;
-  width: 720px;
-  z-index: 97;
-}
-
-/* 外层红色边框背景图 */
-.gridWrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* 内层福字底纹背景图 */
-.gridBg {
-  position: absolute;
-  top: 111px;
-  left: 73px;
-  width: 574px;
-  height: auto;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* 格子容器 */
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(6, 94px);
-  grid-template-rows: repeat(9, 94px);
-  gap: 2px;
-  width: fit-content;
-  position: relative;
-  z-index: 3;
-  /* 格子区域相对于红色背景的偏移 - 与福字底纹对齐 */
-  top: 111px;
-  left: 73px;
-}
-
-/* 单个格子 - 翻转容器 */
-.gridCell {
-  width: 94px;
-  height: 94px;
-  perspective: 1000px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.cellInner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 翻转后的状态 */
-.gridCell.flipped .cellInner {
-  transform: rotateY(180deg);
-}
-
-/* 格子正面（翻转前 - 带脚印） */
-.cellFront {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* 格子背面（翻转后 - 福字底） */
-.cellBack {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: rotateY(180deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  /* overflow: hidden; */
-}
-
-/* 格子图片 */
-.cellImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* 奖品图标 */
-.prizeIcon {
-  position: absolute;
-  max-width: 60%;
-  max-height: 60%;
-  object-fit: contain;
-  z-index: 2;
-}
-
-/* 格子点击效果 */
-.gridCell:not(.flipped):active .cellInner {
-  transform: scale(0.95);
-}
-
-/* 已翻转的格子禁用点击样式 */
-.gridCell.flipped {
-  cursor: default;
-}
-
-/* ========== 挖格子引导动画 ========== */
-.guideContainer {
-  position: absolute;
-  /* 定位到第2行第3列格子的中心 (row=1, col=2) */
-  /* gridContainer offset: top 111px, left 73px */
-  /* 格子中心: (col * 96 + 47, row * 96 + 47) = (239, 143) */
-  /* 最终位置: (73 + 239, 111 + 143) = (312, 254) */
-  top: 254px;
-  left: 312px;
-  z-index: 100;
-  pointer-events: none;
-}
-
-/* 圆圈涟漪效果 */
-.guideCircle {
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  /* 圆圈居中于点击位置 */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
-  animation: circleRipple 1.2s ease-out infinite;
-}
-
-/* 外层涟漪 - 延迟展开 */
-.guideCircle::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  animation: circleExpand 1.2s ease-out infinite;
-}
-
-.fingerGuide {
-  width: 100px;
-  height: 124px;
-  object-fit: contain;
-  /* 调整手指位置，让指尖（左上角）对准圆圈中心 */
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  /* 点击动画 - 手指上下移动 + 缩放模拟点击效果 */
-  animation: fingerTap 1.2s ease-in-out infinite;
-  /* 添加发光效果让引导更醒目 */
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
-}
-
-@keyframes fingerTap {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  20% {
-    transform: translateY(0) scale(1);
-  }
-  /* 手指下压 - 模拟点击 */
-  40% {
-    transform: translateY(8px) scale(0.95);
-  }
-  /* 手指抬起 */
-  60% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes circleRipple {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.3);
-  }
-  20% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.3);
-  }
-  40% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  60% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
-}
-
-@keyframes circleExpand {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  20% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  40% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.5);
-  }
 }

@@ -8,68 +8,63 @@ import { Toast } from '@cola/Toast';
 import LightMobileCall from '@kugou/light-mobilecall';
 import share from '@kugou/share';
 
-// import taskImg from '../../assets/image/taskImg.png';
 import titleImg from '../../assets/image/titleImg.png';
-import { taskReward } from '../../assets/api';
+import { lotteryTaskReward } from '../../assets/api';
 import mobileLog from '../../utils/mobileLog';
 import { apmLog } from '../../utils/apmLog';
 
 const TASK_BTNTEXT_MAP = {
-  1: '开会员',
-  2: '开会员',
-  3: '去领养',
-  4: '去喂养',
-  5: '去聊天',
-  6: '去签到',
-  7: '去分享',
-  8: '去浏览',
+  1: '去领养',
+  2: '去喂食',
+  3: '去对话',
+  4: '去签到',
+  5: '去听歌',
+  6: '去收藏',
+  7: '去装扮',
+  8: '去分享',
   default: '去完成'
 };
 
 const Tasks = (props) => {
   const [isLowVersion, setIsLowVersion] = useState(null); 
-  const { tasks = [], taskConfig = [], shareConfig = [], vipUrl = '', vipIcon = '', useSharePic='', isTaskSubmitting = false, iOS_TARGET_VERSION = '', 
-    Android_TARGET_VERSION = '' } = props;
+  const { 
+    tasks = [], 
+    shareConfig = [],
+    // taskConfig = [], 
+    // vipUrl = '', 
+    // vipIcon = '', 
+    useSharePic='', 
+    isTaskSubmitting = false, 
+    iOS_TARGET_VERSION = '', 
+    Android_TARGET_VERSION = '' 
+  } = props;
   const [taskList, setTaskList] = useState([]);
   const [showLoading, setshowLoading] = useState(true);
   const [sharePicStatus, setSharePicStatus] = useState('loading');
   const eventEmitter = getGlobalEvent();
   let timerId = null;
   const sharePicCleanupRef = useRef(null);
+  const shareDataRef = useRef(null);
 
-  //任务标题
   const getTaskTitle = (taskName, curNum, taskNum, taskType) => {
     return taskType !== 1 ? `${taskName} (${curNum}/${taskNum})` : taskName;
   };
 
-  //任务按钮文字
   const getTaskBtnText = (taskType) => {
     return TASK_BTNTEXT_MAP[taskType] || TASK_BTNTEXT_MAP.default;
   };
 
-  const openVip = () => {
-    const jumpUrl = vipUrl;
-    LightMobileCall.mobileCall(123, { url: jumpUrl, browser: 4 });
-  }
-  // const openSvip = () =>{
-  //   const jumpUrl = SvipUrl;
-  //   LightMobileCall.mobileCall(123, { url: jumpUrl, browser: 0 });
-  // }
-
-const getKgClientVersion = async () => {
+  const getKgClientVersion = async () => {
     if (isLowVersion !== null) return isLowVersion;
-
-    const TARGET_VERSION = LightMobileCall.isIOS ? (iOS_TARGET_VERSION) : (Android_TARGET_VERSION);
+    const TARGET_VERSION = LightMobileCall.isIOS ? iOS_TARGET_VERSION : Android_TARGET_VERSION;
     return new Promise((resolve) => {
       LightMobileCall.mobileCall(122, {}, (response) => {
         try {
           const currentVersion = response?.status === 1 ? Number(response.version) : 0;
           const isLow = currentVersion <= Number(TARGET_VERSION);
-        
           setIsLowVersion(isLow);
           resolve(isLow); 
         } catch (error) {
-          // 处理版本号出错：默认视为低版本
           console.error('处理酷狗版本号时出错:', error);
           setIsLowVersion(true);
           resolve(true);
@@ -78,177 +73,173 @@ const getKgClientVersion = async () => {
     });
   };
 
-  //宠物相关任务跳转
-  const jumpToTaskPage = async(taskType) => {
-    // const jumpUrl = petTaskUrl;
-    // LightMobileCall.mobileCall(123, { url: jumpUrl, browser: 0 });
+  const jumpToPetPage = async(taskType) => {
     try {
       const isLow = await getKgClientVersion();
       if (isLow) {
-      Toast.info({ content: '当前酷狗版本过低，请升级后再操作' });
-      return;
+        Toast.info({ content: '当前酷狗版本过低，请升级后再操作' });
+        return;
       }
-      const targetTab = taskType === 5 ? 0 : 1;
+      const targetTab = taskType === 1 ? 0 : 1;
       openNewPage(targetTab);
     } catch (error) {
       Toast.info({ content: '操作失败，请稍后重试' });
     }
   };
 
-  //定时刷新任务状态
-  // const updateActivityInfo = () => {
-  //  clearTimeout(timerId);
-  //  timerId = setTimeout(updateActivityInfo, 30000);
-  //  eventEmitter.emit('refresh');
-  // };
+  const handleListenTask = () => {
+    LightMobileCall.mobileCall(1303, {}, (res) => {
+      console.log('客户端的返回值', res)
+      const parsedRes = res || {};
+     
+      // try {
+      //   res = JSON.parse(res);
+      // } catch (error) {
+      //   res = {};
+      // }
+      if (parsedRes?.songNum > 0) {
+        LightMobileCall.mobileCall(725, { animated: 1 });
+      } else {
+        LightMobileCall.mobileCall(126, { tab: 43 });
+      }
+    });
+  };
 
-  //处理任务点击，传递任务信息
   const handleTaskClick = async (task) => {
-    const { curNum, taskNum, isAwarded, taskType, taskId } = task;
+    const { curNum, taskNum, isAwarded, taskType, taskId} = task;
     
     const isLoggedIn = await checkLogin();
-    
     if (!isLoggedIn) return;
     if (isAwarded) return;
 
-    //可领取奖励的
     if (curNum >= taskNum && !isAwarded) {
       mobileLog({
         a: 23320001,          
         b: '点击',      
-        ft: '春节挖宝活动页',  
+        ft: '春节抽奖活动页',
         r: '养狗', 
         svar1: '4', 
         ivar1: taskId 
       });
       const toast = Toast.loading({
-      duration: 0,    // 不自动关闭，手动调用remove()
-      mask: true,     // 遮罩，防止重复点击
-      content: '领取中...',
-    });
-    try {
-          const res = await taskReward(taskId); // 获取返回值
-          
-          if (res?.data?.code === 0) {
-            apmLog({
-              typeid: 111645,
-              state: 1,
-              para: 14,
-              page: 0
-            });
-            eventEmitter.emit('refresh'); // 立即刷新
-            Toast.info({ content: '领取成功' });
-          } else {
-            // 服务端业务错误
-            const getbaseInfo = await baseInfo();
-            apmLog({
-              typeid: 111645,
-              state: 0,
-              para: 14,
-              te: "E2",
-              position: "06",
-              fs: `${res?.data?.code || 999}_14`,
-              hash: `任务ID: ${taskId}，错误：${res?.data?.msg || '任务奖励领取失败'}`,
-              interfaceurl: "/kugoupet/activity/digTaskReward",
-              realtime1: window.location.href,
-              page: getbaseInfo?.userid || 0
-            });
-            Toast.info({ content: '领取失败，请稍后重试' });
-          }
-        } catch (err) {
-          // 网络错误
+        duration: 0,
+        mask: true,
+        content: '领取中...',
+      });
+      try {
+        const res = await lotteryTaskReward(taskId);
+        if (res?.data?.code === 0) {
+          apmLog({
+            typeid: 111645,
+            state: 1,
+            para: 14,
+            page: 0
+          });
+          eventEmitter.emit('refresh');
+          Toast.info({ content: '领取成功' });
+        } else {
           const getbaseInfo = await baseInfo();
           apmLog({
             typeid: 111645,
             state: 0,
             para: 14,
-            te: "E1",
+            te: "E2",
             position: "06",
-            fs: `${err?.code || 999}_14`,
-            hash: `任务ID: ${taskId}，错误：${err.msg || err.message || '任务奖励领取失败'}`,
-            interfaceurl: "/kugoupet/activity/digTaskReward",
+            fs: `${res?.data?.code || 999}_14`,
+            hash: `任务ID: ${taskId}，错误：${res?.data?.msg || '任务奖励领取失败'}`,
+            interfaceurl: "/kugoupet/activity/lotteryTaskReward",
             realtime1: window.location.href,
             page: getbaseInfo?.userid || 0
           });
           Toast.info({ content: '领取失败，请稍后重试' });
-        } finally {
-          toast.remove();
         }
-        return;
-      }
-
-      if (taskType !== 7) { 
-        mobileLog({
-          a: 23320001,
-          b: '点击',
-          ft: '春节挖宝活动页',
-          r: '养狗',
-          svar1: '3',      
-          ivar1: taskId   
+      } catch (err) {
+        const getbaseInfo = await baseInfo();
+        apmLog({
+          typeid: 111645,
+          state: 0,
+          para: 14,
+          te: "E1",
+          position: "06",
+          fs: `${err?.code || 999}_14`,
+          hash: `任务ID: ${taskId}，错误：${err.msg || err.message || '任务奖励领取失败'}`,
+          interfaceurl: "/kugoupet/activity/lotteryTaskReward",
+          realtime1: window.location.href,
+          page: getbaseInfo?.userid || 0
         });
+        Toast.info({ content: '领取失败，请稍后重试' });
+      } finally {
+        toast.remove();
       }
-
-    //触发任务时，向父组件传递任务信息，父组件统一监听页面返回
-    // eventEmitter.emit('taskTriggered', {
-    //   taskId,
-    //   taskType
-    // });
-
-    if ([1,2,3,4,5,6].indexOf(taskType)) {
-      // eventEmitter.emit('taskTriggered'); // 无参数
+      return;
     }
 
-    //任务跳转逻辑
+    mobileLog({
+      a: 23320001,
+      b: '点击',
+      ft: '春节抽奖活动页',
+      r: '养狗',
+      svar1: '3',      
+      ivar1: taskId   
+    });
+
     switch (taskType) {
-      // case 1:
-      //   openSvip();
-      //   break;
+      case 1:
       case 2:
-        openVip();
-        break;
       case 3:
       case 4:
-      case 5:
-      case 6:
-        jumpToTaskPage(taskType);
-        break;
       case 7:
+        jumpToPetPage(taskType);
+        break;
+      case 5:
+        handleListenTask();
+        break;
+      case 6:
+        handleListenTask();
+        // Toast.info({ content: '请前往酷狗歌曲页，收藏1首歌即可完成任务' });
+        break;
+            case 8: {
         mobileLog({
           a: 23320001,
           b: '点击',
-          ft: '春节挖宝活动页',
-          r: '养狗',   // 行为描述
-          svar1: '2',      // 场景标识：1=点击分享
-          ivar1: taskId    // 任务ID：必传（分享属于特定任务）
+          ft: '春节抽奖活动页',
+          r: '养狗',
+          svar1: '2',
+          ivar1: taskId
         });
         if (sharePicStatus === 'loading') {
           Toast.info({ content: '分享图加载中，请稍候' });
           return;
         }
-        
         window.isClickShareBtn = 1;
-        share.shareAll();
-
-        break;
-      case 8:
-        //浏览任务跳转
-        const browseUrl = task.jumpUrl;
-        if (!browseUrl) {
-          Toast.info({ content: "请稍后重试" });
-          return;
+        const config = shareDataRef.current;
+        if (config) {
+          const isImageShare = config.type === 4 && config.img;
+          LightMobileCall.mobileCall(115, {
+            type: isImageShare ? 4 : 3,
+            shareData: {
+              linkUrl: encodeURIComponent(config.url || window.location.href),
+              title: config.title || document.title,
+              content: config.content || '',
+              ...(isImageShare
+                ? { imageData: config.img }
+                : { picUrl: config.img || '' }),
+              copyContent: config.copyContent || '',
+              showXhs: config.showXhs !== undefined ? config.showXhs : 1,
+              xhsTitle: config.xhsTitle || '',
+              xhsContent: config.xhsContent || '',
+              xhsPicUrl: config.xhsPicUrl || '',
+            }
+          });
+        } else {
+          share.shareAll();
         }
-        LightMobileCall.mobileCall(123, {
-        url: browseUrl,
-        browser: 4
-        });
-        eventEmitter.emit('browseTaskComplete');
         break;
-      default:
-        break;
+      }
+        default:
     }
   };
 
-  //任务列表
   const renderTaskList = () => {
     if (taskList.length === 0) {
       return (
@@ -266,27 +257,28 @@ const getKgClientVersion = async () => {
       const taskTitle = getTaskTitle(taskName, curNum, taskNum, taskType);
 
       return (
-        <div className={styles.taskItem} key={`taskItem${index}`}>
+        <div className={styles.taskItem} key={`taskItem-${index}-${item.taskId}`}>
           <div className={styles.taskContent}>
             <div className={styles.taskTitle}>{taskTitle}</div>
             <div className={styles.taskDesc}>{tip}</div>
           </div>
 
           {hasFinish ? (
-            <button className={`${styles.finishBtn} ${styles.disable}`}>已领取</button>
+            <button className={`${styles.finishBtn} ${styles.disable}`} disabled>已领取</button>
           ) : canClaim ? (
-            <button className={styles.taskBtn} onClick={() => handleTaskClick(item)} disabled={isTaskSubmitting} >
-              <p>领取奖励</p>
+            <button 
+              className={styles.taskBtn} 
+              onClick={() => handleTaskClick(item)} 
+              disabled={isTaskSubmitting} 
+            >
+              <p>领取</p>
             </button>
           ) : (
-            <button className={taskType === 2 ? styles.VipBtn : styles.taskBtn} onClick={() => handleTaskClick(item)} disabled={isTaskSubmitting} >
-              {taskType === 2 && (
-                <img
-                  src={vipIcon}
-                  alt="会员图标"
-                  className={styles.taskBtnIcon}
-                />
-              )}
+            <button 
+              className={styles.taskBtn} 
+              onClick={() => handleTaskClick(item)} 
+              disabled={isTaskSubmitting} 
+            >
               <p>{getTaskBtnText(taskType)}</p>
             </button>
           )}
@@ -295,54 +287,33 @@ const getKgClientVersion = async () => {
     });
   };
 
-  //监听tasks/taskConfig变化，合并任务数据
   useEffect(() => {
-    if (taskConfig.length === 0) return;
+    if (tasks.length === 0) {
+      setTaskList([]);
+      setshowLoading(false);
+      return;
+    }
 
-    const mergedTasks = taskConfig.map(config => {
-      let userTask = undefined;
-      for (let i = 0; i < tasks.length; i++) {
-        const currentTask = tasks[i];
-        if (currentTask.taskId === config.taskId) {
-          userTask = currentTask;
-          break;
-        }
-      }
-      userTask = userTask || {};
-      return {
-        taskId: config.taskId,
-        taskType: config.taskType,
-        taskName: config.taskDesc,
-        taskDesc: [`完成任务可获得${config.digNum || 0}次挖宝机会`],
-        taskNum: config.taskNum,
-        digNum: config.digNum,
-        refreshType: 1,
-        jumpType: config.jumpType,
-        jumpDesc: config.jumpDesc,
-        jumpUrl: config.jumpUrl || "",
-        curNum: userTask.curNum || 0,
-        isAwarded: userTask.isAwarded || false,
-        isClaiming: false
-      };
-    });
+    const processedTasks = tasks.map(task => ({
+      ...task,
+      taskDesc: [`完成任务可获得${task.lotteryNum || 0}次摇奖机会`]
+    }));
 
-    setTaskList(mergedTasks);
+    setTaskList(processedTasks);
     setshowLoading(false);
-  }, [tasks, taskConfig]);
+  }, [tasks]);
 
-  //初始化
   useEffect(() => {
     sharePicCleanupRef.current = handleSharePic({
       useSharePic: useSharePic,
       defaultShareConfig: shareConfig,
-      onStatusChange: (status) => {
+      onStatusChange: (status, finalConfig) => {
         setSharePicStatus(status);
+        if (finalConfig) {
+          shareDataRef.current = finalConfig;
+        }
       }
     })
-    // initShareConfig();
-    // initPageTrack();
-    // eventEmitter.on('refresh', updateActivityInfo);
-    // updateActivityInfo();
 
     return () => {
       void sharePicCleanupRef.current?.(); 
@@ -352,7 +323,6 @@ const getKgClientVersion = async () => {
 
   return (
     <div className={styles.wrap}>
-      {/* <img className={styles.taskImg} src={taskImg} alt='任务页面背景图' /> */}
       <img className={styles.titleImg} src={titleImg} alt='任务页面标题' />
       <div className={styles.taskContainer}>
         {renderTaskList()}

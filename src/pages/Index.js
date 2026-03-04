@@ -4,69 +4,41 @@ import styles from './Index.module.css';
 import combineSubmodule from '../utils/combineSubmodule';
 import Titlebar from '../components/titlebar';
 import { Toast } from '@cola/Toast';
-import { jumpPage, buildJupmUrl, baseInfo, callAppLogin, openLittleNest, closePage, handleSharePic} from '../utils/util'; 
+import { jumpPage, buildJupmUrl, baseInfo, callAppLogin, openLittleNest, closePage, handleSharePic, openNewPage} from '../utils/util'; 
 import Header from '../components/Header';
 import Tasks from '../components/Tasks';
-import { getDigInfo, openDig, DigTaskComplete, getPetChatInfoCore} from '../assets/api';
-import DailyLoginModal from '../components/DailyLoginModal';
+import { getLotteryInfo, lottery, lotteryTaskComplete, getPetChatInfoCore, getLotteryRewardList } from '../assets/api';
 import { getGlobalEvent } from '../utils/eventEmitter';
 import LightMobileCall from '@kugou/light-mobilecall';
 import SharePoster from '../components/SharePoster';
 import RewardModal from '../components/RewardModal';
-import { prizeMap, cardMap } from '../utils/common';
+import ExchangeModel from '../components/ExchangeModel';
+import { prizeMap } from '../utils/common';
 import kg20EmptyLogin from '@cola/KGImage/src/assets/kg20/empty-login.js';
 import {loading} from '../utils/common'
 import mobileLog from "../utils/mobileLog";
 import { apmLog } from '../utils/apmLog';
-import share from '@kugou/share';
+// import share from '@kugou/share';
+
 const eventBus = getGlobalEvent();
-
-const DAILY_LOGIN_MODAL_KEY = 'pettreasure_daily_login_shown3';
-
-// 获取今天的日期字符串 (YYYY-MM-DD)
-// const getTodayDateStr = () => {
-//   const now = new Date();
-//   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-// };
-
-// 检查今天是否已经弹过弹窗
-// const hasShownTodayModal = () => {
-//   try {
-//     const lastShownDate = localStorage.getItem(DAILY_LOGIN_MODAL_KEY);
-//     return lastShownDate === getTodayDateStr();
-//   } catch (e) {
-//     return false;
-//   }
-// };
-
-// 记录今天已弹过弹窗
-// const markTodayModalShown = () => {
-//   try {
-//     localStorage.setItem(DAILY_LOGIN_MODAL_KEY, getTodayDateStr());
-//   } catch (e) {
-//     console.error('Failed to save to localStorage:', e);
-//   }
-// };
-
 const data = combineSubmodule('Index');
 
 class Index extends Component {
-
   state = {
-    // digNum: 0, // 当前用户剩余挖宝次数
-    rewardConfig: [], // 奖励配置
-    taskConfig: [], // 任务配置
-    // grids: [], // 已经挖开的格子
-    tasks: [], // 用户的任务状态
+    rewardConfig: [],
+    taskConfig: [],
+    tasks: [],
     dataInited: false,
-    // showDailyLoginModal: false, // 是否显示每日首次登录弹窗
-    showRewardModal: false, // 是否显示奖励弹窗
-    rewardModalImageWidth: '100%', // 奖励弹窗图片宽度
-    rewardModalImage: '', // 奖励弹窗图片
-    currentRewardId: 0, // 当前奖励ID
-    rewardModalBtnText: '立即查看', // 奖励弹窗按钮文字
-    rewardModalTitle: '恭喜获得「新春祝福卡」', // 奖励弹窗标题
-    rewardModalSubtitle: '太棒了一级棒~', //  奖励弹窗副标题
+    showRewardModal: false,
+    rewardModalImageWidth: '100%',
+    rewardModalImage: '',
+    currentRewardId: 0,
+    currentRewardType: 0, //存储当前奖品的type
+    currentRewardUrl: '',
+    currentRedeemCode: '', //存储当前奖品的兑换码
+    rewardModalBtnText: '去领取',
+    rewardModalTitle: '恭喜获得奖励',
+    rewardModalSubtitle: '运气超棒~',
     showEmptyImage: true,
     isLoginLoading: true,
     isTaskSubmitting: false,
@@ -74,21 +46,51 @@ class Index extends Component {
     needRedirect: false,
     isLowVersion: null,
     isVersionForbidden: false,
-    isActivityEnded: false
+    isActivityEnded: false,
+    lotteryNum: 0,
+    isHeaderReady: false,
+    sharePicStatus: 'loading',
+    showExchangeModel: false //控制ExchangeModel显示
   }
 
   currentTaskInfo = {
-    // taskId: '',
-    // taskType: 0,
-    isTaskTriggered: false // 是否触发了需要监听返回的任务
+    isTaskTriggered: false
+  };
+
+  //弹窗增加按钮功能，去游戏
+  petHandleUse = async() => {
+    const { isLoading } = this.state;
+    if (isLoading) return;
+    try {
+      this.setState({ isLoading: true });
+      const [response] = await getPetChatInfoCore();
+      this.setState({ isLoading: false });
+      if (!response) {
+        throw new Error("网络异常，请稍后重试...");
+      }
+      const targetTab = response?.hasAdopt === 1 ? 1 : 0;
+      openNewPage(targetTab);
+    } catch (err) {
+      Toast.info({ content: err.message });
+      this.setState({ isLoading: false });
+    }finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  //弹窗使用优惠券
+  handleBtnClick = (config) => {
+    const { link } = config;
+    if (!link) return;
+    LightMobileCall.mobileCall(123, { url: link, browser: 4 });
   };
 
   checkActivityEndByApi = (apiEndTime) => {
-    if (!apiEndTime) return false; // 无endTime则不判断
-    const currentTime = new Date().getTime(); // 当前时间（毫秒级）
-    const endTimeNum = Number(apiEndTime); // 转数字兼容字符串/数字
-    if (isNaN(endTimeNum)) return false; // 非数字容错
-    const endTimeStamp = endTimeNum * 1000; // 秒转毫秒，统一单位对比
+    if (!apiEndTime) return false;
+    const currentTime = new Date().getTime();
+    const endTimeNum = Number(apiEndTime);
+    if (isNaN(endTimeNum)) return false;
+    const endTimeStamp = endTimeNum * 1000;
     return currentTime > endTimeStamp; 
   };
 
@@ -110,17 +112,15 @@ class Index extends Component {
       const isAdopted = response?.hasAdopt === 1;
       if (!isAdopted) {
         Toast.info({ 
-          content: "请先领养宠物再来抽奖吧~",
+          content: "请先领养宠物再来参加抽奖活动~",
           duration: 2500 
         });
         const targetTab = 0;
         setTimeout(() => {
           openLittleNest(targetTab); 
         }, 2500);
-
         this.setState({ needRedirect: true });
       }
-
     } catch (err) {
       const getbaseInfo = await baseInfo();
       apmLog({
@@ -142,144 +142,116 @@ class Index extends Component {
 
   getRewardSubtitle = (rewardId) => {
     const { props } = this;
-    if ([2001, 2002, 2003, 3001, 3002].includes(rewardId)) {
-      return props.prizeCopywriting[`text${rewardId}`]  || '太棒了一级棒~';
+    if ([1,2,3,4,5].includes(rewardId)) {
+      return props.prizeCopywriting[`text${rewardId}`] || '运气超棒~';
     }
-    if (rewardId >= 1001 && rewardId <= 1005) {
-      return props.prizeCopywriting.text1001  || '太棒了一级棒~';
-    }
-    if (rewardId >= 4001 && rewardId <= 4005) {
-      return props.prizeCopywriting.text4001 || '太棒了一级棒~';
-    }
-    if ([5001, 5002, 5003].includes(rewardId)) {
-      return props.prizeCopywriting[`text${rewardId}`] || '太棒了一级棒~';
-    }
-    return props.prizeCopywriting.textDefault || '太棒了一级棒~';
+    return props.prizeCopywriting.textDefault || '运气超棒~';
   };
 
   transRewardConfig = (rewardConfig) => {
     this._rewardConfigMap = {};
     for (let i = 0; i < rewardConfig.length; i++) {
       const item = rewardConfig[i];
-      this._rewardConfigMap[item.rewardId] = item;
+      this._rewardConfigMap[item.id] = item;
     }
   }
 
-initData = async () => {
-  if (this.state.isVersionForbidden) return;
-  if (this.state.isActivityEnded) return;
-  const getbaseInfo = await baseInfo();
-  // 先定义res，避免catch里res未赋值
-  let res = null;
-  if (LightMobileCall.isInClient()) {
-    try {
-      res = await getDigInfo();
-      if (res?.data?.code === 0) {
-        const data = res?.data?.data || {};
-        // const digNum = data.digNum || 0;
-        const endTime = data.config?.endTime;
-        const isActivityOver = this.checkActivityEndByApi(endTime);
-        if (isActivityOver) {
+  initData = async () => {
+    if (this.state.isVersionForbidden) return;
+    if (this.state.isActivityEnded) return;
+    const getbaseInfo = await baseInfo();
+    let res = null;
+    if (LightMobileCall.isInClient()) {
+      try {
+        res = await getLotteryInfo();
+        if (res?.data?.code === 0) {
+          const data = res?.data?.data || {};
+          const endTime = data.endTime;
+          const isActivityOver = this.checkActivityEndByApi(endTime);
+          
+          if (isActivityOver) {
+            this.setState({
+              isActivityEnded: true,
+              isLoginLoading: false,
+              showEmptyImage: true
+            }, () => {
+              Toast.info({ content: '活动已结束' });
+              setTimeout(() => closePage(), 2500);
+            })
+            return;
+          }
+
           this.setState({
-            isActivityEnded: true,
-            isLoginLoading: false,
-            showEmptyImage: true
+            dataInited: true,
+            rewardConfig: data.rewardList || [],
+            taskConfig: data.taskConfig || [],
+            tasks: data.tasks || [],
+            lotteryNum: data.LotteryNum || 0,
+            isLoginLoading: false
           }, () => {
-            Toast.info({ content: '活动已结束' });
-            setTimeout(() => closePage(), 2500);
-          })
-          return;
+            this.transRewardConfig(data.rewardList || []);
+          });
+          
+          apmLog({
+            typeid: 111645,
+            state: 1,
+            para: 14,
+            page: 0
+          });
+        } else {
+          apmLog({
+            typeid: 111645,
+            state: 0,
+            para: 14,
+            te: "E2", 
+            position: "02",
+            fs: `${res?.data?.code || 999}_14`,
+            hash: `错误：${res?.data?.msg || '服务端处理失败'}`,
+            interfaceurl: "/kugoupet/activity/lotteryInfo",
+            realtime1: window.location.href,
+            page: getbaseInfo?.userid || 0 
+          });
         }
-        this.setState({
-          dataInited: true,
-          rewardConfig: data.config?.rewardConfig || [],
-          taskConfig: data.config?.taskConfig || [],
-          // grids: data.grids || [],
-          tasks: data.tasks || [],
-          // digNum,
-          isLoginLoading: false
-        }, () => {
-          // this.checkAndShowDailyLoginModal();
-          this.transRewardConfig(data.config?.rewardConfig || []);
-        });
-      apmLog({
-          typeid: 111645,
-          state: 1,
-          para: 14,
-          page: 0
-        });
-      } else {
-        // 服务端错误code!==0）
+      } catch (err) {
         apmLog({
           typeid: 111645,
           state: 0,
           para: 14,
-          te: "E2", 
+          te: "E1", 
           position: "02",
-          fs: `${res?.data?.code || 999}_14`,
-          hash: `错误：${res?.data?.msg || '服务端处理失败'}`,
-          interfaceurl: "/kugoupet/activity/digInfo",
+          fs: `999_14`,
+          hash: `错误：${err.msg || err.message || '网络异常，请求失败'}`,
+          interfaceurl: "/kugoupet/activity/lotteryInfo",
           realtime1: window.location.href,
-          page: getbaseInfo?.userid || 0 
+          page: getbaseInfo?.userid || 0
         });
+        this.setState({ isLoginLoading: false });  
       }
-    } catch (err) {
-      // 网络错误
-      apmLog({
-        typeid: 111645,
-        state: 0,
-        para: 14,
-        te: "E1", 
-        position: "02",
-        fs: `999_14`,
-        hash: `错误：${err.msg || err.message || '网络异常，请求失败'}`,
-        interfaceurl: "/kugoupet/activity/digInfo",
-        realtime1: window.location.href,
-        page: getbaseInfo?.userid || 0
-      });
-      this.setState({ isLoginLoading: false });  
+      window.vs_finish && window.vs_finish();
     }
-    window.vs_finish && window.vs_finish();
-  }
-};
-  // 检查并显示每日登录弹窗
-  // checkAndShowDailyLoginModal = () => {
-  //   const { digNum, dataInited, grids } = this.state;
-  //   // 条件：当天没有弹过 && digNum >= 1 && dataInited = true
-  //   if (dataInited && digNum >= 1 && !hasShownTodayModal() && grids.length < 54) {
-  //     this.setState({ showDailyLoginModal: true });
-  //     markTodayModalShown();
-  //   }
-  // }
+  };
 
-   initClientPageListener = () => {
+  initClientPageListener = () => {
     LightMobileCall.KgWebMobileCall("KgWebMobileCall.shareStatus", (res) => {
       try {
         res = JSON.parse(res);
       } catch (error) {}
-     console.log("shareStatus" ,res)
       
-     
-      // 有记录标记， 又触发了分享回调返回1，就是分享成功
       if (window.isClickShareBtn === 1 && Number(res.status) === 1) {
         eventBus.emit('titleBarShareSuccess'); 
-         console.log("shareStatus" ,res?.status)
       }
     })
   };
   
   componentDidMount () {
-    const shareConfig = this.props.sharePosterConfig || {};
-    console.log("【页面初始化】传入的配置：", shareConfig)
+    // const shareConfig = this.props.sharePosterConfig || {};
     handleSharePic({
-          useSharePic: this.props.useSharePic || '', 
-          defaultShareConfig: this.props.sharePosterConfig || {},
-
-          onStatusChange: (status) => {
-            this.setState({ sharePicStatus: status });
-          }
-        });
-
+      useSharePic: this.props.useSharePic || '', 
+      defaultShareConfig: this.props.sharePosterConfig || {},
+      onStatusChange: (status) => {
+        this.setState({ sharePicStatus: status });
+      }
+    });
 
     loading.show();
     LightMobileCall.mobileCall(128, { state: 0 })
@@ -288,6 +260,7 @@ initData = async () => {
     this.initClientPageListener();
     this.checkLoginStatus();
     document.addEventListener('visibilitychange', this.handleBrowserVisibilityChange);
+
     window._kg_opendata_ = {
       page: "活动页",
       activityName: "养狗品牌合作抽奖" || document.title,
@@ -300,12 +273,12 @@ initData = async () => {
     }
 
     mobileLog({
-          a: 23320002,
-          b: '曝光',
-          ft: '春节抽奖各页面',
-          r: '养狗',
-          svar1: '1'
-        });
+      a: 23320002,
+      b: '曝光',
+      ft: '春节抽奖各页面',
+      r: '养狗',
+      svar1: '1'
+    });
     apmLog({
       typeid: 111645,
       state: 1,
@@ -316,76 +289,44 @@ initData = async () => {
 
     eventBus.on('refresh', () => {
       this.initData();
-      console.log(12345)
     });
 
     eventBus.on('taskTriggered', (taskInfo) => {
-      // console.log('父组件收到 taskTriggered 事件，任务信息：', taskInfo);
-      // this.currentTaskInfo = {
-      //   ...this.currentTaskInfo,
-      //   ...taskInfo,
-      //   isTaskTriggered: true 
-      // };
       this.currentTaskInfo.isTaskTriggered = true;
     });
 
     eventBus.on('titleBarShareSuccess', async() => {
       let shareTask = undefined;
-      const taskConfig = this.state.taskConfig;
-        for (let i = 0; i < taskConfig.length; i++) {
-          const currentTask = taskConfig[i];
-          if (currentTask.taskType === 7) {
-            shareTask = currentTask;
-        break; 
+      const taskConfig = this.state.tasks;
+      for (let i = 0; i < taskConfig.length; i++) {
+        const currentTask = taskConfig[i];
+        if (currentTask.taskType === 8) {
+          shareTask = currentTask;
+          break; 
         }
       }
       if (shareTask?.taskId) {
         this.currentTaskInfo = {
           ...this.currentTaskInfo,
           taskId: shareTask.taskId,
-          taskType: 7,
-          isTaskTriggered: true 
-      };
-      this.setState({ isTaskSubmitting: true });
-      await this.handleTaskReport(shareTask.taskId);
-      this.initData();
-      }
-  });
-    eventBus.on('browseTaskComplete', async () => {
-      let browseTask = undefined;
-      const taskConfig = this.state.taskConfig;
-      for (let i = 0; i < taskConfig.length; i++) {
-        const currentTask = taskConfig[i];
-        if (currentTask.taskType === 8) {
-          browseTask = currentTask;
-          break;
-        }
-      }
-      if (browseTask?.taskId) {
-        this.currentTaskInfo = {
-          ...this.currentTaskInfo,
-          taskId: browseTask.taskId,
           taskType: 8,
           isTaskTriggered: true 
-      };
+        };
         this.setState({ isTaskSubmitting: true });
-        await this.handleTaskReport(browseTask.taskId);
+        await this.handleTaskReport(shareTask.taskId);
         this.initData();
-    }
-  });
-
-  LightMobileCall.KgWebMobileCall("KgWebMobileCall.pageStatusNew", (res) => {
-    try {
-      res = JSON.parse(res);
-    } catch (error) { }
-
-    if (res?.status === 3) {
-      // webview重新展示（活动页重新展示）
-      // 需要刷新接口更新状态
-      // refresh
-      eventBus.emit('refresh');
       }
     });
+
+    LightMobileCall.KgWebMobileCall("KgWebMobileCall.pageStatusNew", (res) => {
+      try {
+        res = JSON.parse(res);
+      } catch (error) { }
+      if (res?.status === 3) {
+        eventBus.emit('refresh');
+      }
+    });
+
     apmLog({
       typeid: 111645,
       state: 1,
@@ -398,8 +339,8 @@ initData = async () => {
 
   callKugouLogin = async () => {
     if (!LightMobileCall.isInClient()) {
-    return; 
-  }
+      return; 
+    }
     if (this._baseInfo?.userid) return;
 
     const loginParams = {
@@ -411,8 +352,6 @@ initData = async () => {
     LightMobileCall.mobileCall(102, loginParams);
     LightMobileCall.KgWebMobileCall("KgWebMobileCall.userStatus", async () => {
       const newBaseInfo = await baseInfo();
-      //TODO
-
       if (newBaseInfo?.userid !== this._baseInfo?.userid) {
         this.setState({ showEmptyImage: false });
         window.location.reload();
@@ -422,7 +361,6 @@ initData = async () => {
 
   getKgClientVersion = async () => {
     const { isLowVersion } = this.state;
-    // 已判断过版本号，直接返回结果
     if (isLowVersion !== null) return isLowVersion;
     const TARGET_VERSION = LightMobileCall.isIOS 
       ? this.props.iOS_TARGET_VERSION 
@@ -435,7 +373,6 @@ initData = async () => {
           this.setState({ isLowVersion: isLow });
           resolve(isLow); 
         } catch (error) {
-          // 处理版本号出错：默认视为低版本
           this.setState({ isLowVersion: true });
           resolve(true);
         }
@@ -446,22 +383,21 @@ initData = async () => {
   async checkLoginStatus() {
     let getbaseInfo = null;
     try{
-        getbaseInfo = await baseInfo();
-      //TODO
-    if (!getbaseInfo?.userid) {
-      this.callKugouLogin();
-      this.setState({
-        showEmptyImage: true, 
-        isLoginLoading: false
-      });
-      return
-    } 
-    const isLow = await this.getKgClientVersion();
+      getbaseInfo = await baseInfo();
+      if (!getbaseInfo?.userid) {
+        this.callKugouLogin();
+        this.setState({
+          showEmptyImage: true, 
+          isLoginLoading: false
+        });
+        return
+      } 
+      const isLow = await this.getKgClientVersion();
       if (isLow) {
         Toast.info({ content: '当前酷狗版本过低，请先升级' });
         setTimeout(() => {
-        closePage();
-      }, 2500);
+          closePage();
+        }, 2500);
         this.setState({ 
           isVersionForbidden: true,
           showEmptyImage: true,
@@ -471,13 +407,10 @@ initData = async () => {
       }
       this.setState({ 
         showEmptyImage: false,
-        // isLoginLoading: false,
       });
       this._baseInfo = getbaseInfo;
       this.checkPetAdoptStatus();
-
     }catch(err){
-      // 异常处理：重置状态
       this.setState({
         showEmptyImage: true,
         isLoginLoading: false
@@ -486,7 +419,7 @@ initData = async () => {
         typeid: 111645,
         state: 0,
         para: 14,
-        te: "E4", // 客户端异常
+        te: "E4",
         position: "01",
         fs: "999_14",
         hash: `错误：${err.message}`,
@@ -512,17 +445,17 @@ initData = async () => {
 
   handleTaskReport = async (taskId) => {
     const toast = Toast.loading({
-    duration: 0,
-    mask: true,
-  });
+      duration: 0,
+      mask: true,
+    });
     try {
-      await DigTaskComplete(taskId);
+      await lotteryTaskComplete(taskId);
       apmLog({
         typeid: 111645,
         state: 1,
         para: 14,
         page: 0
-      });//TODO
+      });
       this.initData();
     } catch (err) {
       const getbaseInfo = await baseInfo();
@@ -534,7 +467,7 @@ initData = async () => {
         position: "04",
         fs: `${err?.code || 999}_14`, 
         hash: `错误：${err.msg || err.message || '任务提交失败'}`,
-        interfaceurl: "/kugoupet/activity/digTaskComplete",
+        interfaceurl: "/kugoupet/activity/lotteryTaskComplete",
         realtime1: window.location.href,
         page: getbaseInfo?.userid || 0
       });
@@ -546,113 +479,74 @@ initData = async () => {
     }
   };
 
+  shareTaskReport = async (taskId) => {
+    return Promise.resolve({ code: 0 });
+  };
+
   componentWillUnmount() {
     eventBus.off('refresh', this.initData);
     eventBus.off('taskTriggered');
     eventBus.off('titleBarShareSuccess');
     eventBus.off('browseTaskComplete');
-    document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange); // 新增
+    eventBus.off('openExchangeModel');
+    document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange);
   }
 
-  // 获取奖励，挖宝核心方法
-  // onGotPrize = (rewardId, gridInfo) => {
-  //   // 啥也没挖到
-  //   if (gridInfo?.rewardId === 0) {
-  //     Toast.info({
-  //       content: '很遗憾，没有挖到宝物'
-  //     });
-  //     return;
-  //   } else if (rewardId > 0) {
-  //     const isCard = rewardId === 2001 || rewardId === 2002 || rewardId === 2003 || rewardId === 3001 || rewardId === 3002;
-  //     const rewardItem = this._rewardConfigMap[rewardId];
-  //     const rewardTitle = `恭喜获得「${rewardItem?.rewardDesc}」`;
-  //     const rewardSubtitle = this.getRewardSubtitle(rewardId);
-  //     this.setState({ 
-  //       showRewardModal: true,
-  //       rewardModalImageWidth: (rewardId === 2001 || rewardId === 2002 || rewardId === 2003) ? '100%' : '50%',
-  //       rewardModalImage: prizeMap[rewardId + '']?.src,
-  //       currentRewardId: rewardId,
-  //       rewardModalBtnText: isCard ? '立即查看' : '立即领取',
-  //       rewardModalTitle: rewardTitle,
-  //       rewardModalSubtitle: rewardSubtitle
-  //     });
-  //   }
-  // }
-
-  scrollToBottom = () => {
-    document.querySelector('#page').scrollTo({
-      top: document.querySelector('#page').scrollHeight,
-      behavior: 'smooth'
-    });
-  };
-
-  isAllTasksCompleted = () => {
-  const { taskConfig, tasks } = this.state;
-  // 无任务配置时，视为任务完成
-  if (taskConfig.length === 0) return true;
-  // 遍历所有任务，要求每个任务都完成次数达标 + 已领取奖励,才判定为全完成
-  return taskConfig.every(config => {
-    // 匹配用户当前任务状态，无匹配则视为未完成
-    const userTask = tasks.find(t => t.taskId === config.taskId) || { curNum: 0, isAwarded: false };
-    // 任务完成判定条件：完成次数>=要求次数 且已领取奖励
-    return userTask.curNum >= config.taskNum && userTask.isAwarded;
-  });
-};
-
-  handleCellClick = async (cellId, prizeInfo, cellInfo) => {
-    const grids = this.state.grids;
-    // 已经挖完了
-    if (grids.length === 54) {
-      const rewardId = cellInfo?.rewardId;
-      if (rewardId === 0) {
-        return;
-      }
-      // const isCard = rewardId === 2001 || rewardId === 2002 || rewardId === 2003 || rewardId === 3001 || rewardId === 3002;
-      // const rewardItem = this._rewardConfigMap[rewardId];
-      // const rewardTitle = `恭喜获得「${rewardItem?.rewardDesc}」`;
-      // const rewardSubtitle = this.getRewardSubtitle(rewardId);
-      // this.setState({ 
-      //   showRewardModal: true,
-      //   rewardModalImageWidth: (rewardId === 2001 || rewardId === 2002 || rewardId === 2003) ? '100%' : '50%',
-      //   rewardModalImage: prizeInfo?.src,
-      //   currentRewardId: rewardId,
-      //   rewardModalBtnText: isCard ? '立即查看' : '知道了',
-      //   rewardModalTitle: rewardTitle,
-      //   rewardModalSubtitle: rewardSubtitle
-      // });
-      const rewardItem = this._rewardConfigMap[rewardId];
-      const rewardName = rewardItem?.rewardDesc;
-      Toast.info({
-        content: `已获得「${rewardName}」`, 
-        mask: false // 不需要遮罩
-      });
-      return;
+  handleRaffle = async () => {
+    const { lotteryNum, isActivityEnded } = this.state;
+    
+    if (isActivityEnded) {
+      Toast.info({ content: '活动已结束，感谢参与~' });
+      return { success: false };
+    }
+    if (lotteryNum <= 0) {
+      Toast.info({ content: '暂无抽奖次数，快去做任务获取吧~' });
+      return { success: false };
     }
 
-    if (this.state.digNum <= 0) {
-      this.scrollToBottom()
-      const isAllTaskDone = this.isAllTasksCompleted();
-      const tipText = isAllTaskDone 
-        ? '今天的任务已经都做完啦，明天再来抽奖吧！' 
-        : '暂无抽奖机会，快来做任务获取吧~';
-      Toast.fail(tipText);
-      return false;
-    }
-    mobileLog({
-      a: 23320001,
-      b: '点击',
-      ft: '春节挖宝活动页',
-      r: '养狗',
-      svar1:'1'
-    });
-    // 这里可以调用接口获取奖励
-    const toast = Toast.loading({
-      duration: 0,
-      mask: true,
-      content: '挖宝中...',
-    });
     const getbaseInfo = await baseInfo();
-    const res = await openDig(cellId).catch((err) => {
+    try {
+      const res = await lottery();
+      if (res?.data?.code === 0) {
+        const rewardData = res?.data?.data || {};
+        const rewardId = rewardData.rewardId || 0;
+        const rewardType = rewardData.rewardType || 0; //获取type
+        const rewardUrl = rewardData.url || '';
+        const rewardName = rewardData.name || '未知奖励';
+        const redeemCode = rewardData.redeemCode || ''; //获取兑换码
+
+        this.setState({
+          currentRewardId: rewardId,
+          currentRewardType: rewardType, //存储type
+          currentRewardUrl: rewardUrl,
+          currentRedeemCode: redeemCode, //存储兑换码
+          rewardModalTitle: `恭喜获得「${rewardName}」`,
+          rewardModalSubtitle: this.getRewardSubtitle(rewardId),
+          rewardModalImage: prizeMap[rewardId + '']?.src || '',
+          rewardModalImageWidth: '50%',
+          rewardModalBtnText: rewardId === 5 ? '去喂养' : '去领取'
+        });
+
+        this.initData();
+        apmLog({
+          typeid: 111645,
+          state: 1,
+          para: 14,
+          page: 0
+        });
+
+        return {
+          success: true,
+          rewardId: rewardId,
+          onRaffleComplete: () => {
+            this.setState({ showRewardModal: true });
+          }
+        };
+      } else {
+        Toast.fail(`抽奖失败，请稍后重试`);
+        return { success: false };
+      }
+    } catch (err) {
       apmLog({
         typeid: 111645,
         state: 0,
@@ -661,39 +555,14 @@ initData = async () => {
         position: "05",
         fs: `${err?.code || 999}_14`,
         hash: `错误：${err.message}`,
-        interfaceurl: "/kugoupet/activity/digGridOpen",
+        interfaceurl: "/kugoupet/activity/lottery",
         realtime1: window.location.href,
         page: getbaseInfo?.userid || 0
       });
-      toast.remove();
       Toast.fail(`抽奖失败，请稍后重试`);
-    });
-    toast.remove();
-    if (res?.data?.code === 0) {
-      const grids = [...this.state.grids];
-      grids.push({
-        ...res?.data?.data?.gridInfo
-      });
-      this.setState({
-        digNum: res?.data?.data?.digNum || 0,
-        grids
-      });
-      this.onGotPrize(res?.data?.data?.rewardId, res?.data?.data?.gridInfo);
-        apmLog({
-          typeid: 111645,
-          state: 1,
-          para: 14,
-          page: 0
-        });
-      } else if (res?.data?.code === 100500) {
-        Toast.fail(`暂无抽奖机会，快来做任务获取吧~`);
-        return false;
-      } else {
-        Toast.fail(`抽奖失败，请稍后重试`);
-        return false;
-      }
-      return true;
-  }
+      return { success: false };
+    }
+  };
 
   handleRuleClick = async () => {
     const url = buildJupmUrl({ pageName: 'index_rule' });
@@ -705,50 +574,76 @@ initData = async () => {
     jumpPage(url, url);
   }
 
-  // 关闭每日登录弹窗
-  // handleCloseDailyLoginModal = () => {
-  //   this.setState({ showDailyLoginModal: false });
-  // }
-
-  // 点击立即挖宝按钮
-  // handleDailyLoginConfirm = () => {
-  //   this.setState({ showDailyLoginModal: false });
-  //   // 可以在这里添加滚动到挖宝区域等逻辑
-  // }
-
   handleCloseRewardModal = () => {
     this.setState({ showRewardModal: false });
   }
 
   handleConfirmRewardModal = () => {
-    this.setState({ showRewardModal: false });
-    const rewardId = this.state.currentRewardId;
-    const isCard = rewardId === 2001 || rewardId === 2002 || rewardId === 2003 || rewardId === 3001 || rewardId === 3002;
-    if (isCard) {
-      eventBus.emit('share', {
-        cardImage: cardMap[rewardId + ''],
-        url: window.location.href,
-      });
-    }
-  }
+    //关闭RewardModal
+    this.setState({ showRewardModal: false }, () => {
+      const { currentRewardId, currentRewardType, currentRewardUrl, currentRedeemCode } = this.state;
+      const prizeId = String(currentRewardId);
+      const isPrize1 = prizeId === '1' && currentRewardType === 1;
+      const isPrize2To4 = ['2', '3', '4'].includes(prizeId);
+      const isPrize5 = prizeId === '5';
 
+      //根据奖品类型执行对应操作
+      if (isPrize1) {
+        // 唤起ExchangeModel并传递兑换码
+        this.setState({
+          showExchangeModel: true,
+          currentRedeemCode: currentRedeemCode
+        });
+      } else if (isPrize2To4) {
+        // 跳转链接
+        this.handleBtnClick({ link: currentRewardUrl });
+      } else if (isPrize5) {
+        // 去喂养
+        this.petHandleUse();
+      }
+    });
+  };
+
+  handleExchange = async (redeemCode) => {
+    try {
+      //getLotteryRewardList 接口
+      const res = await getLotteryRewardList();
+      if (res?.data?.code === 0 && Array.isArray(res.data?.data?.rewardList)) {
+        // 找到当前兑换码对应的奖品URL
+        const targetPrize = res.data.data.rewardList.find(
+          item => item.redeemCode === redeemCode
+        );
+        if (targetPrize?.url) {
+          LightMobileCall.mobileCall(123, { url: targetPrize.url, browser: 4 });
+        } else {
+          Toast.info({ content: '暂无跳转链接' });
+        }
+      }
+    } catch (error) {
+      console.error('兑换跳转失败:', error);
+      Toast.info({ content: '兑换跳转失败，请稍后重试' });
+    }
+  };
 
   render () {
-    const { isActivityEnded, isLoginLoading, digNum, rewardConfig, taskConfig, grids, tasks, dataInited, showDailyLoginModal, showRewardModal, rewardModalImage, rewardModalImageWidth, rewardModalBtnText, rewardModalTitle, rewardModalSubtitle, showEmptyImage, currentRewardId, needRedirect, isVersionForbidden } = this.state;
-    const sharePosterConfig = this.props.sharePosterConfig;
-    const vipUrl = this.props.vipUrl;
-    const SvipUrl = this.props.SvipUrl;
-    const petTaskUrl = this.props.petTaskUrl;
-    const vipIcon = this.props.vipIcon;
-    const useSharePic = this.props.useSharePic;
-    const iOS_TARGET_VERSION = this.props.iOS_TARGET_VERSION;
-    const Android_TARGET_VERSION = this.props.Android_TARGET_VERSION
-    // const shareConfig = this.props.share
+    const { 
+      isActivityEnded, isLoginLoading, lotteryNum, rewardConfig, taskConfig, tasks, 
+      dataInited, showRewardModal, rewardModalImage, rewardModalImageWidth, 
+      rewardModalBtnText, rewardModalTitle, rewardModalSubtitle, showEmptyImage, 
+      currentRewardId, currentRewardUrl, needRedirect, isVersionForbidden,isHeaderReady,
+      showExchangeModel, currentRedeemCode
+    } = this.state;
+
+    const { 
+      sharePosterConfig, vipUrl, SvipUrl, petTaskUrl, vipIcon, useSharePic,
+      iOS_TARGET_VERSION, Android_TARGET_VERSION
+    } = this.props;
 
     if (isLoginLoading ) {
-      return null; //解决接口返回慢导致登录页一闪而过
-     }
-     if (isVersionForbidden || isActivityEnded) {
+      return null;
+    }
+
+    if (isVersionForbidden || isActivityEnded) {
       return (
         <div className={styles.wrap} id="page">
           <div className={styles.emptyContent}>
@@ -763,85 +658,92 @@ initData = async () => {
     }
     
     const mainContent = (
-    <>
-      {LightMobileCall.isInClient() ? 
-      <Titlebar 
-        // bgMusic= 'https://webfile.yun.kugou.com/fmt01_600dc8816ce86a7de422299da914f786.mp3' 
-        iconColor="#fff" 
-        useSharePic={useSharePic} 
-        showShare={true} 
-        shareConfig={sharePosterConfig}
-      /> : null }
-      <div className={styles.overlapContainer}>
-      {/* Header 作为底层 */}
-        <div className={styles.headerLayer}>
-          <Header
-            chanceCount={digNum}
-            rewardConfig={rewardConfig}
-            grids={grids}
-            showDailyLoginModal={showDailyLoginModal}
-            onCellClick={this.handleCellClick}
-            dataInited={dataInited}
-            onRuleClick={this.handleRuleClick}
-            onPrizeClick={this.handlePrizeClick}
-          />
-        </div>
-        
-        {/* Tasks 作为上层，重叠在 Header 上 */}
-        <div className={styles.tasksLayer}>
-          <Tasks tasks={tasks} 
-            taskConfig={taskConfig} 
-            shareConfig={sharePosterConfig} 
-            vipUrl={vipUrl} 
-            SvipUrl={SvipUrl} 
-            petTaskUrl={petTaskUrl} 
-            vipIcon={vipIcon} 
+      <>
+        {LightMobileCall.isInClient() ? 
+          <Titlebar 
+            iconColor="#fff" 
             useSharePic={useSharePic} 
-            isTaskSubmitting={this.state.isTaskSubmitting} 
-            iOS_TARGET_VERSION={iOS_TARGET_VERSION}
-            Android_TARGET_VERSION={Android_TARGET_VERSION}
-          />
+            showShare={true} 
+            shareConfig={sharePosterConfig}
+          /> : null 
+        }
+        <div className={styles.overlapContainer}>
+          <div className={styles.headerLayer}>
+            <Header
+              chanceCount={lotteryNum}
+              rewardConfig={rewardConfig}
+              dataInited={dataInited}
+              onRuleClick={this.handleRuleClick}
+              onPrizeClick={this.handlePrizeClick}
+              onRaffle={this.handleRaffle}
+              onHeaderReady={() => this.setState({ isHeaderReady: true })}
+            />
+          </div>
+          
+          {isHeaderReady && (
+            <>
+              <div className={styles.tasksLayer}>
+                <Tasks 
+                  tasks={tasks} 
+                  taskConfig={taskConfig} 
+                  shareConfig={sharePosterConfig} 
+                  vipUrl={vipUrl} 
+                  SvipUrl={SvipUrl} 
+                  petTaskUrl={petTaskUrl} 
+                  vipIcon={vipIcon} 
+                  useSharePic={useSharePic} 
+                  isTaskSubmitting={this.state.isTaskSubmitting} 
+                  iOS_TARGET_VERSION={iOS_TARGET_VERSION}
+                  Android_TARGET_VERSION={Android_TARGET_VERSION}
+                />
+              </div>
+              <div>
+                <img
+                  src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
+                  className={styles.taskBg}
+                  alt=''
+                />
+              </div>
+            </>
+          )}
         </div>
-        <div>
-          <img
-            src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
-            className={styles.taskBg}
-            alt=''
-          />
-        </div>
-      </div>
       
-      {/* 每日首次登录弹窗 */}
-      {/* <DailyLoginModal
-        visible={showDailyLoginModal}
-        onClose={this.handleCloseDailyLoginModal}
-        onConfirm={this.handleDailyLoginConfirm}
-      /> */}
-      <SharePoster shareConfig={sharePosterConfig} />
-      <RewardModal
-        visible={showRewardModal}
-        animalImage={rewardModalImage}
-        onClose={this.handleCloseRewardModal}
-        onConfirm={this.handleConfirmRewardModal}
-        buttonText={rewardModalBtnText}
-        imgWidth={rewardModalImageWidth}
-        title={rewardModalTitle}
-        subtitle={rewardModalSubtitle}
-        rewardId={currentRewardId}
-      />
-    </>
-  );
+        {isHeaderReady && (
+          <>
+            <SharePoster shareConfig={sharePosterConfig} />
+            <RewardModal
+              visible={showRewardModal}
+              animalImage={rewardModalImage}
+              onClose={this.handleCloseRewardModal}
+              onConfirm={this.handleConfirmRewardModal} // 传递修改后的回调
+              buttonText={rewardModalBtnText}
+              imgWidth={rewardModalImageWidth}
+              title={rewardModalTitle}
+              subtitle={rewardModalSubtitle}
+              rewardId={currentRewardId}
+              rewardUrl={currentRewardUrl}
+            />
+            <ExchangeModel 
+              shareConfig={sharePosterConfig}
+              exchangeCode={currentRedeemCode}
+              onClose={() => this.setState({ showExchangeModel: false })}
+              onExchange={this.handleExchange}
+              visible={showExchangeModel}
+            />
+          </>
+        )}
+      </>
+    );
 
     return (
       <div className={styles.wrap} id="page">
         {LightMobileCall.isInClient()?(
           needRedirect ? (
             <>
-              <div className={styles.shareMask}>
-              </div>
+              <div className={styles.shareMask}></div>
               {mainContent}
             </> 
-          ) :
+          ) : (
             <>
               {showEmptyImage && (
                 <div className={styles.emptyContent}>
@@ -854,37 +756,34 @@ initData = async () => {
                   </button>
                 </div>
               )}
-            {!showEmptyImage && mainContent}
-          </>
+              {!showEmptyImage && mainContent}
+            </>
+          )
         ) : (
           <>
             <div className={styles.shareMask} >
               <button 
-              className = {styles.callButton}
-              onClick={callAppLogin}
-              //TODO
-            >
-              去酷狗一起挖宝
-            </button>
+                className = {styles.callButton}
+                onClick={callAppLogin}
+              >
+                去酷狗参与抽奖
+              </button>
             </div>
-
-          <Header
-            chanceCount={digNum}
-            rewardConfig={rewardConfig}
-            grids={grids}
-            showDailyLoginModal={showDailyLoginModal}
-            onCellClick={this.handleCellClick}
-            dataInited={dataInited}
-            onRuleClick={this.handleRuleClick}
-            onPrizeClick={this.handlePrizeClick}
-          />
+            <Header
+              chanceCount={lotteryNum}
+              rewardConfig={rewardConfig}
+              dataInited={dataInited}
+              onRuleClick={this.handleRuleClick}
+              onPrizeClick={this.handlePrizeClick}
+              onRaffle={this.handleRaffle}
+              onHeaderReady={() => this.setState({ isHeaderReady: true })}
+            />
           </>
         )}
-        </div>
+      </div>
     );
   }
 }
 
 Index.defaultProps = data;
-
 export default Index;

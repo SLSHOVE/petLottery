@@ -3,7 +3,7 @@ import styles from './index.module.css';
 
 // 导入切图
 import topBg from './images/top_bg.png';
-import decoration from './images/decoration.png';
+// import decoration from './images/decoration.png';
 import closeIcon from './images/close-icon.svg';
 import ribbon from './images/ribbon.png'
 import mobileLog from '../../utils/mobileLog';
@@ -69,7 +69,6 @@ const RewardModal = (props) => {
   return (
     <div className={styles.modalMask} onClick={handleMaskClick}>
       <div className={styles.modalContainer}>
-        {/* 关闭按钮 */}
         <img 
           className={styles.closeBtn} 
           src={closeIcon} 
@@ -77,12 +76,10 @@ const RewardModal = (props) => {
           onClick={handleClose}
         />
         
-        {/* 顶部背景区域 */}
         <div className={styles.topSection}>
           <img className={styles.topBg} src={topBg} alt="" />
           {/* <img className={styles.decoration} src={decoration} alt="" /> */}
           
-          {/* 动物图片 */}
           {animalImage && (
             <div className={styles.animalWrapper}>
               {needShowRibbon ? (
@@ -102,17 +99,13 @@ const RewardModal = (props) => {
           )}
         </div>
         
-        {/* 白色背景内容区域 */}
         <div className={styles.contentBg}>
-          {/* 主标题 */}
           <div className={styles.title}>{title}</div>
           
-          {/* 副标题 */}
           {subtitle && (
             <div className={styles.subtitle}>{subtitle}</div>
           )}
           
-          {/* 按钮 */}
           <div className={styles.confirmBtn} onClick={handleConfirm}>
             <span className={styles.btnText}>{buttonText}</span>
           </div>

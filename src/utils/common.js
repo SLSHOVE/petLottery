@@ -2,7 +2,6 @@ import kgLoad from '@kugou/kg-loading';
 
 const toastQueue = []
 export const Toast = (word, delay, noAutoHide = false) => {
-    // 防重复
     const preToast = document.getElementById('toastCover')
     if (preToast) {
         toastQueue.push({ word, delay, noAutoHide })
@@ -27,8 +26,6 @@ export const Toast = (word, delay, noAutoHide = false) => {
         if (document.querySelector('#toastCover')) {
             toastCover.parentNode.removeChild(toastCover);
         }
-
-        // 显示队列里的其他toast
         showNextToast()
     }, delay)
 }
@@ -73,110 +70,39 @@ export const loading = (() => {
     }
 })();
 
-// 奖励资源
+// 【修改1】只保留1-5号奖品配置
+// 对应要求：“奖品也只剩四个，只有1-5号”
 export const prizeMap = {
-  '1001': {
-    src: require('../assets/image/prizes/1000.png'),
+  '1': {
+    src: require('../assets/image/prizes/prize1.png'),
     row: 1,
     col: 1,
   },
-  '1002': {
-    src: require('../assets/image/prizes/1000.png'),
+  '2': {
+    src: require('../assets/image/prizes/prize2.png'),
     row: 1,
     col: 1,
   },
-  '1003': {
-    src: require('../assets/image/prizes/1000.png'),
+  '3': {
+    src: require('../assets/image/prizes/prize3.png'),
     row: 1,
     col: 1,
   },
-  '1004': {
-    src: require('../assets/image/prizes/1000.png'),
+  '4': {
+    src: require('../assets/image/prizes/prize4.png'),
     row: 1,
     col: 1,
   },
-  '1005': {
-    src: require('../assets/image/prizes/1000.png'),
+  '5': {
+    src: require('../assets/image/prizes/prize5.png'),
     row: 1,
     col: 1,
-  },
-  '2001': {
-    src: require('../assets/image/prizes/2001.png'),
-    row: 1,
-    col: 2,
-  },
-  '2002': {
-    src: require('../assets/image/prizes/2002.png'),
-    row: 1,
-    col: 2,
-  },
-  '2003': {
-    src: require('../assets/image/prizes/2003.png'),
-    row: 1,
-    col: 2,
-  },
-  '3001': {
-    src: require('../assets/image/prizes/3001.png'),
-    row: 2,
-    col: 1,
-  },
-  '3002': {
-    src: require('../assets/image/prizes/3002.png'),
-    row: 2,
-    col: 1,
-  },
-  '4001': {
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '4002': {
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '4003': {
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '4004':{
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '4005': {
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '4006': {
-    src: require('../assets/image/prizes/4000.png'),
-    row: 1,
-    col: 1,
-  },
-  '5001': {
-    src: require('../assets/image/prizes/5001.png'),
-    row: 3,
-    col: 3,
-  },
-  '5002': {
-    src: require('../assets/image/prizes/5002.png'),
-    row: 3,
-    col: 3,
-  },
-  '5003': {
-    src: require('../assets/image/prizes/5003.png'),
-    row: 3,
-    col: 3,
   },
 }
 
-// 卡片资源
-export const cardMap = {
-  '2001': require('../assets/image/cards/2001.png'),
-  '2002': require('../assets/image/cards/2002.png'),
-  '2003': require('../assets/image/cards/2003.png'),
-  '3001': require('../assets/image/cards/3001.png'),
-  '3002': require('../assets/image/cards/3002.png'),
+export function getQueryVariable (name) {
+  const url = window.location.href;
+  let reg = new RegExp('[?&]' + name + '=([^&#]+)');
+  let query = url.match(reg);
+  return query ? query[1] : null;
 }

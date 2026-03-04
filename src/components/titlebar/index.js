@@ -91,6 +91,8 @@ export default class TitleBar extends Component {
     bgMusic: '' //父组件传的音频链接
   };
 
+  shareConfigData = null;
+
   state = {
     statusBarHeight: 0,
     titleBarHeight: 0,
@@ -132,8 +134,11 @@ export default class TitleBar extends Component {
     this.shareCleanup = handleSharePic({
       useSharePic: this.props.useSharePic || '', 
       defaultShareConfig: this.props.shareConfig || {},
-      onStatusChange: (status) => {
+      onStatusChange: (status, finalConfig) => {
         this.setState({ sharePicStatus: status });
+        if (finalConfig) {
+          this.shareConfigData = finalConfig;
+        }
       }
     });
     this.initAudio(); //初始化音频
@@ -304,7 +309,28 @@ export default class TitleBar extends Component {
     // share.resetShareData(shareConfig);
 
     window.isClickShareBtn = 1;
-    share.shareAll();
+    const config = this.shareConfigData;
+    if (config) {
+      const isImageShare = config.type === 4 && config.img;
+      LightMobileCall.mobileCall(115, {
+        type: isImageShare ? 4 : 3,
+        shareData: {
+          linkUrl: encodeURIComponent(config.url || window.location.href),
+          title: config.title || document.title,
+          content: config.content || '',
+          ...(isImageShare
+            ? { imageData: config.img }
+            : { picUrl: config.img || '' }),
+          copyContent: config.copyContent || '',
+          showXhs: config.showXhs !== undefined ? config.showXhs : 1,
+          xhsTitle: config.xhsTitle || '',
+          xhsContent: config.xhsContent || '',
+          xhsPicUrl: config.xhsPicUrl || '',
+        }
+      });
+    } else {
+      share.shareAll();
+    }
   }
 
   render () {
@@ -341,7 +367,7 @@ export default class TitleBar extends Component {
                 <div className={styles.musicWrap} onClick={this.handleMusicEvt} aria-label="音乐按键" role="button">
                   <MusicIcon 
                   className={`${styles.music} ${styles.musicRotating} ${isPlaying ? '' : styles.musicPaused}`} 
-  color={currentIconColor}
+                  color={currentIconColor}
                   />
                 </div>
                 <div className={styles.shareWrap} onClick={this.shareEvt} aria-label="分享" role="button">

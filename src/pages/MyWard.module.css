@@ -47,7 +47,7 @@ body{
     flex-shrink: 0;
     object-fit: contain;
     border-radius: 8px;
-    background-color: #F5F5F5;
+    /* background-color: #F5F5F5; */
 }
 
 /* 奖品信息 */
@@ -86,8 +86,9 @@ body{
     flex-shrink: 0;
     width: 112px;
     height: 44px;
-    background-color: #F60950;
+    background: linear-gradient(to right, #30EAFD 0%, #0C81FF 100%);
     border: none;
+    border-radius: 4px;
     font-family: "PingFang SC", sans-serif;
     font-weight: 400;
     font-size: 22px;

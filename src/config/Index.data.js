@@ -1,15 +1,18 @@
 module.exports = {
     sharePosterConfig: {
-        title: '酷狗酷AI萌宠重磅上线！',
-        content: '快来酷狗一起猫狗双全~',
+        title: '来酷狗领狗粮',
+        content: '酷狗X贵族发狗粮啦！大把宠物福利等你来抽~',
         url: 'https://activity.kugou.com/petTreasure/v-fd157ecd/index.html',
-        img: 'https://voowebpbssdl.kugou.com/c36f495f0b3377a20f4a4e79f8faaf63.png',
+        img: 'https://voowebpbssdl.kugou.com/fad8790d491438cb3e84daed72506a81.png',
         poster: '',
         withoutQrPoster: '',
-        xhs_config: [{
-          title: '酷狗酷AI萌宠重磅上线！',
-          content: '快来酷狗一起猫狗双全~'
-        }]
+        showXhs: 1,
+        xhsTitle: '来酷狗领狗粮',
+        xhsContent: '酷狗X贵族发狗粮啦！大把宠物福利等你来抽~',
+        xhsPicUrl: 'https://voowebpbssdl.kugou.com/fad8790d491438cb3e84daed72506a81.png',  // 必須是 750×750 的圖片地址
+        xhs_config: [
+          { title: '来酷狗领狗粮', content: '酷狗X贵族发狗粮啦！大把宠物福利等你来抽~' }
+        ]
     },
     
     iOS_TARGET_VERSION: 20520,
