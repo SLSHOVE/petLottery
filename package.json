@@ -5,9 +5,9 @@
   "author": "wildesu",
   "tags": "示例",
   "mtpId": "115455",
-  "pmsId": "",
+  "pmsId": "224427",
   "cover": "https://voowebpbssdl.kugou.com/524d0e246c6932e57b9c07c5f6564526.png",
-  "pigeonId": "224427",
+  "pigeonId": "",
   "scripts": {
     "generate-config": "node scripts/generateConfig.js",
     "generate-entry": "node scripts/generateEntry.js",
