@@ -7,7 +7,7 @@
   "mtpId": "115455",
   "pmsId": "",
   "cover": "https://voowebpbssdl.kugou.com/524d0e246c6932e57b9c07c5f6564526.png",
-  "pigeonId": "",
+  "pigeonId": "224427",
   "scripts": {
     "generate-config": "node scripts/generateConfig.js",
     "generate-entry": "node scripts/generateEntry.js",
