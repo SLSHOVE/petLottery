@@ -114,12 +114,12 @@ const Tasks = (props) => {
 
     if (curNum >= taskNum && !isAwarded) {
       mobileLog({
-        a: 23320001,          
-        b: '点击',      
-        ft: '春节抽奖活动页',
-        r: '养狗', 
-        svar1: '4', 
-        ivar1: taskId 
+        a: 1134954,
+        b: '点击',
+        ft: '贵族摇奖机页面',
+        r: '养狗',
+        svar1: '4',
+        ivar1: taskId
       });
       const toast = Toast.loading({
         duration: 0,
@@ -175,12 +175,12 @@ const Tasks = (props) => {
     }
 
     mobileLog({
-      a: 23320001,
+      a: 1134954,
       b: '点击',
-      ft: '春节抽奖活动页',
+      ft: '贵族摇奖机页面',
       r: '养狗',
-      svar1: '3',      
-      ivar1: taskId   
+      svar1: '3',
+      ivar1: taskId
     });
 
     switch (taskType) {
@@ -200,12 +200,11 @@ const Tasks = (props) => {
         break;
             case 8: {
         mobileLog({
-          a: 23320001,
+          a: 1134954,
           b: '点击',
-          ft: '春节抽奖活动页',
+          ft: '贵族摇奖机页面',
           r: '养狗',
-          svar1: '2',
-          ivar1: taskId
+          svar1: '2'
         });
         if (sharePicStatus === 'loading') {
           Toast.info({ content: '分享图加载中，请稍候' });

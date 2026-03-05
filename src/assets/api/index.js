@@ -1,7 +1,7 @@
 import KGRequest from '@kugou/request';
 import { baseInfo } from '../../utils/util';
 
-// 通用请求函数（保留，抽奖接口复用）
+// 通用请求函数
 const fxRequest = async (options) => {
     const userBaseInfo = await baseInfo()
     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
@@ -31,7 +31,7 @@ const fxRequest = async (options) => {
     return KGRequest(requestOptions)
 }
 
-// 宠物接口专用请求函数（保留，宠物领养检查用）
+// 宠物接口专用请求函数
 const fxRequest1 = async (options) => {
     const userBaseInfo = await baseInfo()
     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
@@ -60,10 +60,8 @@ const fxRequest1 = async (options) => {
     return KGRequest(requestOptions)
 }
 
-// ====================== 新增：抽奖相关接口（替换原挖宝接口） ======================
-
 /**
- * 获取抽奖信息（原getDigInfo替换）
+ * 获取抽奖信息
  * @method GET
  * @url /kugoupet/activity/lotteryInfo
  * @return {Promise} 响应包含：LotteryNum(抽奖次数)、startTime/endTime(活动时间)、tasks(任务列表)
@@ -82,7 +80,7 @@ export async function getLotteryInfo() {
 }
 
 /**
- * 领取抽奖任务奖励（原DigTaskComplete/taskReward替换）
+ * 领取抽奖任务奖励
  * @method POST
  * @url /kugoupet/activity/lotteryTaskReward
  * @param {number} taskId - 任务ID（必填）

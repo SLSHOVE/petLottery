@@ -7,8 +7,7 @@ import prize from './images/prize.png'
 
 const eventHub = getGlobalEvent();
 
-// 仅新增接收 exchangeCode 和可选的 onClose（兼容父组件），其他逻辑完全保留
-const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
+const ExchangeModal = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
   const [visible, setVisible] = useState(false);
   const currentCode = exchangeCode || '暂无兑换码';
 
@@ -23,7 +22,7 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
     };
   }, []);
 
-  // 复制逻辑：使用父组件传入的兑换码
+  //使用父组件传入的兑换码
   const handleCopy = async () => {
     if (!currentCode || currentCode === '暂无兑换码') {
       Toast('暂无兑换码');
@@ -34,7 +33,7 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
         await navigator.clipboard.writeText(currentCode);
         Toast('复制成功');
       } else {
-        // 兼容旧浏览器
+        //兼容旧浏览器
         const input = document.createElement('input');
         input.value = currentCode;
         document.body.appendChild(input);
@@ -52,7 +51,6 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
   //去兑换操作
   const handleExchange = () => {
     //后续可添加跳转逻辑
-    // console.log('执行去兑换操作，当前兑换码：', currentCode);
     onExchange(currentCode);
   };
 
@@ -74,7 +72,6 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
           </svg>
         </div>
 
-        {/* 兑换内容区域 */}
         <>
           <img
             src={prize}
@@ -84,7 +81,7 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
           <h2 className={styles.exchangeTitle}>恭喜获得【富养包 1kg】免单券</h2>
           <div className={styles.codeRow}>
             <span className={styles.codeLabel}>兑换码 |</span>
-            {/* 显示父组件传入的兑换码 */}
+            {/* 显示传入的兑换码 */}
             <span className={styles.codeText}>{currentCode}</span>
             <button className={styles.copyBtn} onClick={handleCopy}>复制</button>
           </div>
@@ -96,4 +93,4 @@ const ExchangeModel = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
   );
 };
 
-export default ExchangeModel;
+export default ExchangeModal;

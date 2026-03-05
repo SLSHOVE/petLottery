@@ -13,11 +13,11 @@ class Rule extends Component {
   componentDidMount() {
     window.vs_finish && window.vs_finish();
     mobileLog({
-              a: 23320002,
+              a: 1134953,
               b: '曝光',
-              ft: '春节挖宝各页面',
+              ft: '贵族摇奖机各页面',
               r: '养狗',
-              svar1:'2'
+              svar1: '2'
             });
   }
 

@@ -10,7 +10,7 @@ import { Toast } from '@cola/Toast';
 // import { getGlobalEvent } from '../utils/eventEmitter';
 import {openNewPage} from '../utils/util'
 // import SharePoster from '../components/SharePoster';
-import ExchangeModel from '../components/ExchangeModel';
+import ExchangeModel from '../components/ExchangeModal';
 import mobileLog from '../utils/mobileLog';
 import kg20EmptyContent from '@cola/KGImage/src/assets/kg20/empty-content.js'
 
@@ -71,11 +71,11 @@ class MyWard extends Component {
     this.initData();
     window.vs_finish && window.vs_finish();
     mobileLog({
-          a: 23320002,
+          a: 1134953,
           b: '曝光',
-          ft: '春节抽奖各页面',
+          ft: '贵族摇奖机各页面',
           r: '养狗',
-          svar1:'3'
+          svar1: '3'
         });
   }
 

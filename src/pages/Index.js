@@ -12,7 +12,7 @@ import { getGlobalEvent } from '../utils/eventEmitter';
 import LightMobileCall from '@kugou/light-mobilecall';
 import SharePoster from '../components/SharePoster';
 import RewardModal from '../components/RewardModal';
-import ExchangeModel from '../components/ExchangeModel';
+import ExchangeModal from '../components/ExchangeModal';
 import { prizeMap } from '../utils/common';
 import kg20EmptyLogin from '@cola/KGImage/src/assets/kg20/empty-login.js';
 import {loading} from '../utils/common'
@@ -50,7 +50,7 @@ class Index extends Component {
     lotteryNum: 0,
     isHeaderReady: false,
     sharePicStatus: 'loading',
-    showExchangeModel: false //控制ExchangeModel显示
+    showExchangeModal: false //控制ExchangeModal显示
   }
 
   currentTaskInfo = {
@@ -273,9 +273,9 @@ class Index extends Component {
     }
 
     mobileLog({
-      a: 23320002,
+      a: 1134953,
       b: '曝光',
-      ft: '春节抽奖各页面',
+      ft: '贵族摇奖机各页面',
       r: '养狗',
       svar1: '1'
     });
@@ -488,7 +488,7 @@ class Index extends Component {
     eventBus.off('taskTriggered');
     eventBus.off('titleBarShareSuccess');
     eventBus.off('browseTaskComplete');
-    eventBus.off('openExchangeModel');
+    eventBus.off('openExchangeModal');
     document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange);
   }
 
@@ -503,6 +503,14 @@ class Index extends Component {
       Toast.info({ content: '暂无抽奖次数，快去做任务获取吧~' });
       return { success: false };
     }
+
+    mobileLog({
+      a: 1134954,
+      b: '点击',
+      ft: '贵族摇奖机页面',
+      r: '养狗',
+      svar1: '1'
+    });
 
     const getbaseInfo = await baseInfo();
     try {
@@ -589,9 +597,9 @@ class Index extends Component {
 
       //根据奖品类型执行对应操作
       if (isPrize1) {
-        // 唤起ExchangeModel并传递兑换码
+        // 唤起ExchangeModal并传递兑换码
         this.setState({
-          showExchangeModel: true,
+          showExchangeModal: true,
           currentRedeemCode: currentRedeemCode
         });
       } else if (isPrize2To4) {
@@ -631,7 +639,7 @@ class Index extends Component {
       dataInited, showRewardModal, rewardModalImage, rewardModalImageWidth, 
       rewardModalBtnText, rewardModalTitle, rewardModalSubtitle, showEmptyImage, 
       currentRewardId, currentRewardUrl, needRedirect, isVersionForbidden,isHeaderReady,
-      showExchangeModel, currentRedeemCode
+      showExchangeModal, currentRedeemCode
     } = this.state;
 
     const { 
@@ -723,12 +731,12 @@ class Index extends Component {
               rewardId={currentRewardId}
               rewardUrl={currentRewardUrl}
             />
-            <ExchangeModel 
+            <ExchangeModal 
               shareConfig={sharePosterConfig}
               exchangeCode={currentRedeemCode}
-              onClose={() => this.setState({ showExchangeModel: false })}
+              onClose={() => this.setState({ showExchangeModal: false })}
               onExchange={this.handleExchange}
-              visible={showExchangeModel}
+              visible={showExchangeModal}
             />
           </>
         )}
