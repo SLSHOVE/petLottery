@@ -60,9 +60,9 @@
     bottom: 120px;
     left:50%;
     transform: translateX(-50%);
-    background-color: #F60950;
+    /* background-color: #F60950; */
+    background-color: linear-gradient(to right, #30EAFD 0%, #0C81FF 100%);
     color: white;
-    /* border: none; */
     border-radius: 12px;
     width: 500px;
     height: 80px;
