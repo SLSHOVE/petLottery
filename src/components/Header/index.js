@@ -23,6 +23,7 @@ import prize2 from '../../assets/image/prizes/prize2.png';
 import prize3 from '../../assets/image/prizes/prize3.png';
 import prize4 from '../../assets/image/prizes/prize4.png';
 import prize5 from '../../assets/image/prizes/prize5.png';
+import defaultPrize from '../../assets/image/prizes/default.png';
 
 const PRIZE_LIST = [prize1, prize2, prize3, prize4, prize5];
 const ROLL_ORDER = [0,1,2,3,4,0,1,2,3,4];
@@ -43,6 +44,7 @@ class Header extends Component {
       { rolling: false, index: 0, targetIndex: 0 },
       { rolling: false, index: 0, targetIndex: 0 },
     ],
+    hasStartedRaffle: false,
   };
 
   rollTimers = [null, null, null];
@@ -95,7 +97,8 @@ class Header extends Component {
       bannerBg, middleBg, gridWrapper, gridBg,
       ruleBtn, prizeBtn, lightImg, lightImg1,
       ...POP_IMAGES,
-      ...PRIZE_LIST
+      ...PRIZE_LIST,
+      defaultPrize
     ];
 
     Promise.all(allImages.map(src => {
@@ -148,8 +151,22 @@ class Header extends Component {
     return Math.max(0, Math.min(PRIZE_LIST.length - 1, (rewardId || 1) - 1));
   };
 
+  getSlotImage = (slot) => {
+    const { hasStartedRaffle } = this.state;
+
+    if (!hasStartedRaffle) {
+      return defaultPrize;
+    }
+
+    if (slot.rolling) {
+      return PRIZE_LIST[ROLL_ORDER[slot.index]];
+    }
+
+    return PRIZE_LIST[slot.index];
+  };
+
   //单个格子启动滚动
-  startSingleSlot = (slotIdx, targetIndex) => {
+  startSingleSlot = (slotIdx) => {
     if (this.rollTimers[slotIdx]) clearInterval(this.rollTimers[slotIdx]);
     
     this.setState(prev => {
@@ -157,7 +174,7 @@ class Header extends Component {
       newSlots[slotIdx] = {
         ...newSlots[slotIdx],
         rolling: true,
-        targetIndex: targetIndex,
+        // targetIndex: targetIndex,
         index: 0
       };
       return { slots: newSlots };
@@ -201,18 +218,29 @@ class Header extends Component {
     const { chanceCount, dataInited, onRaffle } = this.props;
     const { isRaffling, isReady } = this.state;
 
-    if (isRaffling || !isReady || !dataInited || chanceCount <= 0) return;
+    if (isRaffling || !isReady || !dataInited) return;
+    if (chanceCount <= 0) {
+      onRaffle && onRaffle();
+      return;
+    }
 
-    this.setState({ isRaffling: true });
+    this.setState(prev => ({
+      isRaffling: true,
+      hasStartedRaffle: true,
+      slots: prev.slots.map(slot => ({
+        ...slot,
+        targetIndex: 0
+      }))
+    }));
     this.raffleResult = null;
 
     //启动滚动动画
-    this.startSingleSlot(0, 0);
+    this.startSingleSlot(0);
     this.startDelayTimers[1] = setTimeout(() => {
-      this.startSingleSlot(1, 0);
+      this.startSingleSlot(1);
     }, START_INTERVAL);
     this.startDelayTimers[2] = setTimeout(() => {
-      this.startSingleSlot(2, 0);
+      this.startSingleSlot(2);
     }, START_INTERVAL * 2);
 
     //调用父组件接口
@@ -293,21 +321,21 @@ class Header extends Component {
             <div className={styles.prizeGrid}>
               <img
                 className={`${styles.prizeImg} ${slots[0].rolling ? styles.rolling : ''}`}
-                src={slots[0].rolling ? PRIZE_LIST[ROLL_ORDER[slots[0].index]] : PRIZE_LIST[slots[0].index]}
+                src={this.getSlotImage(slots[0])}
                 alt="奖品"
               />
             </div>
             <div className={styles.prizeGrid1}>
               <img
                 className={`${styles.prizeImg} ${slots[1].rolling ? styles.rolling : ''}`}
-                src={slots[1].rolling ? PRIZE_LIST[ROLL_ORDER[slots[1].index]] : PRIZE_LIST[slots[1].index]}
+                src={this.getSlotImage(slots[1])}
                 alt="奖品"
               />
             </div>
             <div className={styles.prizeGrid2}>
               <img
                 className={`${styles.prizeImg} ${slots[2].rolling ? styles.rolling : ''}`}
-                src={slots[2].rolling ? PRIZE_LIST[ROLL_ORDER[slots[2].index]] : PRIZE_LIST[slots[2].index]}
+                src={this.getSlotImage(slots[2])}
                 alt="奖品"
               />
             </div>
@@ -316,7 +344,7 @@ class Header extends Component {
             <button
               className={styles.raffleBtn}
               onClick={this.handleRaffle}
-              disabled={isRaffling || chanceCount <= 0}
+              disabled={isRaffling}
             />
 
             <div className={styles.sideButtons}>

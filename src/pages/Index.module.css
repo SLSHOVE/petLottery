@@ -75,47 +75,42 @@
 .overlapContainer {
   position: relative;
   width: 100%;
-  /* 高度设为 Header 的高度（根据你的实际UI调整，比如600px） */
-  /* height: 2200px;  */
   box-sizing: border-box;
-  /* padding: 16px; */
 }
 
-/* Header 底层：绝对定位，占满父容器 */
 .headerLayer {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
-  z-index: 1; /* 底层层级 */
+  z-index: 1;
 }
 
-/* Tasks 上层：绝对定位，重叠在 Header 上 */
+.tasksStage {
+  position: relative;
+  width: 100%;
+  margin-top: -511.68px;
+  z-index: 3;
+}
+
 .tasksLayer {
-  position: absolute;
-  top: 1168.32px; /* 关键：控制Tasks从Header的哪个位置开始重叠（比如Header下方400px处） */
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
   width: 678.719970703125px;
-  /* height: 824.6400146484375px; */
-  z-index: 3; /* 上层层级，确保Tasks能点击 */
+  z-index: 3;
   box-sizing: border-box;
 }
 
 .taskBg{
   position: absolute;
   width: 720px;
-  top: 1208.64px;
+  top: 40.32px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 2;
 }
 
-/* 适配小屏幕（可选） */
 @media (max-width: 375px) {
-  .overlapContainer {
-    min-height: 550px;
-  }
-  .tasksLayer {
-    top: 350px; /* 小屏幕调整重叠位置 */
+  .tasksStage {
+    margin-top: -480px;
   }
 }

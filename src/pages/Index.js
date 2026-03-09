@@ -492,6 +492,26 @@ class Index extends Component {
     document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange);
   }
 
+  // 滚动到任务区
+  scrollToTaskArea = () => {
+    const el = document.getElementById('task-area');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      const page = document.querySelector('#page');
+      if (page) {
+        page.scrollTo({ top: page.scrollHeight, behavior: 'smooth' });
+      }
+    }
+  };
+
+  // 是否全部任务已完成
+  isAllTasksCompleted = () => {
+    const { tasks } = this.state;
+    if (!tasks || tasks.length === 0) return true;
+    return tasks.every(t => t.curNum >= t.taskNum && t.isAwarded);
+  };
+
   handleRaffle = async () => {
     const { lotteryNum, isActivityEnded } = this.state;
     
@@ -500,7 +520,12 @@ class Index extends Component {
       return { success: false };
     }
     if (lotteryNum <= 0) {
-      Toast.info({ content: '暂无抽奖次数，快去做任务获取吧~' });
+      this.scrollToTaskArea();
+      const isAllTaskDone = this.isAllTasksCompleted();
+      const tipText = isAllTaskDone
+        ? '今天的任务已经都做完啦，明天再来抽奖吧！'
+        : '暂无抽奖机会，快来做任务获取吧~';
+      Toast.fail(tipText);
       return { success: false };
     }
 
@@ -689,7 +714,12 @@ class Index extends Component {
           </div>
           
           {isHeaderReady && (
-            <>
+            <div id="task-area" className={styles.tasksStage}>
+              <img
+                src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
+                className={styles.taskBg}
+                alt=''
+              />
               <div className={styles.tasksLayer}>
                 <Tasks 
                   tasks={tasks} 
@@ -705,14 +735,7 @@ class Index extends Component {
                   Android_TARGET_VERSION={Android_TARGET_VERSION}
                 />
               </div>
-              <div>
-                <img
-                  src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
-                  className={styles.taskBg}
-                  alt=''
-                />
-              </div>
-            </>
+            </div>
           )}
         </div>
       

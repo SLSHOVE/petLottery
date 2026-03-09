@@ -86,6 +86,24 @@ const Tasks = (props) => {
       Toast.info({ content: '操作失败，请稍后重试' });
     }
   };
+  const handlePetChatTask = async(taskType) => {
+    try {
+      const isLow = await getKgClientVersion();
+      if (isLow) {
+        Toast.info({ content: '当前酷狗版本过低，请升级后再操作' });
+        return;
+      }
+      const targetTab = 0;
+      openNewPage(targetTab);
+    } catch (error) {
+      Toast.info({ content: '操作失败，请稍后重试' });
+    }
+  };
+
+  // handlePetChatTask = () => {
+  //   const targetTab = 1;
+  //   openNewPage(targetTab);
+  // };
 
   const handleListenTask = () => {
     LightMobileCall.mobileCall(1303, {}, (res) => {
@@ -186,10 +204,14 @@ const Tasks = (props) => {
     switch (taskType) {
       case 1:
       case 2:
-      case 3:
       case 4:
       case 7:
+      // case 3:
         jumpToPetPage(taskType);
+        break;
+      case 3:
+      // case 7:
+        handlePetChatTask();
         break;
       case 5:
         handleListenTask();
