@@ -2,12 +2,8 @@ import React, { Component } from 'react';
 import styles from './index.module.css';
 
 import bannerBg from '../../assets/image/header/banner-bg.png';
-import middleBg from '../../assets/image/header/middle-bg.png';
-import gridWrapper from '../../assets/image/header/grid-wraper2.png';
-import gridBg from '../../assets/image/header/grid-bg.png';
 import ruleBtn from '../../assets/image/header/rule-btn.png';
 import prizeBtn from '../../assets/image/header/prize-btn.png';
-// import chanceIcon from '../../assets/image/header/wa.png';
 import lightImg from '../../assets/image/header/lightImg.png';
 import lightImg1 from '../../assets/image/header/lightImg1.png';
 
@@ -94,8 +90,7 @@ class Header extends Component {
   // 预加载所有图片
   loadAllImages = () => {
     const allImages = [
-      bannerBg, middleBg, gridWrapper, gridBg,
-      ruleBtn, prizeBtn, lightImg, lightImg1,
+      bannerBg, ruleBtn, prizeBtn, lightImg, lightImg1,
       ...POP_IMAGES,
       ...PRIZE_LIST,
       defaultPrize

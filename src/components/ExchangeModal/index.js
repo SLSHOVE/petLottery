@@ -1,26 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Toast } from '../../utils/common';
 import styles from './index.module.css';
-// import LightMobileCall from '@kugou/light-mobilecall';
-import { getGlobalEvent } from '../../utils/eventEmitter';
-import prize from './images/prize.png'
+import prize from './images/prize.png';
+// 新增：引入兑换所需的API和工具
+import { getLotteryRewardList } from '../../assets/api';
+import LightMobileCall from '@kugou/light-mobilecall';
 
-const eventHub = getGlobalEvent();
-
-const ExchangeModal = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
-  const [visible, setVisible] = useState(false);
+const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false }) => {
   const currentCode = exchangeCode || '暂无兑换码';
-
-  useEffect(() => {
-    const handleShare = () => {
-      setVisible(true);
-    };
-
-    eventHub.on('share', handleShare);
-    return () => {
-      eventHub.off('share', handleShare);
-    };
-  }, []);
 
   //使用父组件传入的兑换码
   const handleCopy = async () => {
@@ -48,17 +35,39 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, onExchange }) => {
     }
   };
 
-  //去兑换操作
-  const handleExchange = () => {
-    //后续可添加跳转逻辑
-    onExchange(currentCode);
+  const handleExchange = async () => {
+    try {
+      const res = await getLotteryRewardList();
+      // 校验接口返回合法性
+      if (!res?.data || res.data.code !== 0 || !Array.isArray(res.data.data?.rewardList)) {
+        Toast('奖品信息获取失败，请稍后重试');
+        return;
+      }
+      // 根据兑换码匹配奖品
+      const targetPrize = res.data.data.rewardList.find(
+        item => item.redeemCode === currentCode
+      );
+      if (!targetPrize) {
+        Toast('未找到对应奖品');
+        return;
+      }
+      // 判断URL是否有效（兼容空字符串、全空格）
+      const isValidUrl = targetPrize.url && targetPrize.url.trim() !== '';
+      if (isValidUrl) {
+        // 跳转链接
+        LightMobileCall.mobileCall(123, { url: targetPrize.url, browser: 4 });
+      } else {
+        // 无链接时提示
+        Toast('暂无跳转链接');
+      }
+    } catch (error) {
+      console.error('兑换跳转失败:', error);
+      Toast('兑换跳转失败，请稍后重试');
+    }
   };
 
-  // 保留原有关闭逻辑，同时兼容父组件的 onClose
   const onMaskClick = () => {
-    setVisible(false);
-    // 如果父组件传了 onClose，也执行（保证和父组件状态同步）
-    if (onClose) onClose();
+    onClose && onClose();
   };
 
   if (!visible) return null;

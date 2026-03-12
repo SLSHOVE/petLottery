@@ -22,6 +22,7 @@ const TASK_BTNTEXT_MAP = {
   6: '去收藏',
   7: '去装扮',
   8: '去分享',
+  9: '开会员',
   default: '去完成'
 };
 
@@ -47,7 +48,8 @@ const Tasks = (props) => {
   const shareDataRef = useRef(null);
 
   const getTaskTitle = (taskName, curNum, taskNum, taskType) => {
-    return taskType !== 1 ? `${taskName} (${curNum}/${taskNum})` : taskName;
+    // return taskType !== 1 ? `${taskName} (${curNum}/${taskNum})` : taskName;
+    return `${taskName} (${curNum}/${taskNum})`;
   };
 
   const getTaskBtnText = (taskType) => {

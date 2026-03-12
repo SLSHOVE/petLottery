@@ -3,7 +3,6 @@ import styles from './index.module.css';
 
 // 导入切图
 import topBg from './images/top_bg.png';
-// import decoration from './images/decoration.png';
 import closeIcon from './images/close-icon.svg';
 import ribbon from './images/ribbon.png'
 import mobileLog from '../../utils/mobileLog';
@@ -78,7 +77,6 @@ const RewardModal = (props) => {
         
         <div className={styles.topSection}>
           <img className={styles.topBg} src={topBg} alt="" />
-          {/* <img className={styles.decoration} src={decoration} alt="" /> */}
           
           {animalImage && (
             <div className={styles.animalWrapper}>

@@ -10,7 +10,7 @@ import { Toast } from '@cola/Toast';
 // import { getGlobalEvent } from '../utils/eventEmitter';
 import {openNewPage} from '../utils/util'
 // import SharePoster from '../components/SharePoster';
-import ExchangeModel from '../components/ExchangeModal';
+import ExchangeModal from '../components/ExchangeModal';
 import mobileLog from '../utils/mobileLog';
 import kg20EmptyContent from '@cola/KGImage/src/assets/kg20/empty-content.js'
 
@@ -22,7 +22,7 @@ class MyWard extends Component {
     prizeList: [],
     isLoading: false,
     isListLoading: false,
-    showExchangeModel: false,
+    showExchangeModal: false,
     currentRedeemCode: '' // 仅新增：存储当前兑换码
   };
 
@@ -132,7 +132,7 @@ class MyWard extends Component {
               if (isPrize1) {
                 // 设置当前兑换码并打开弹窗
                 this.setState({ 
-                  showExchangeModel: true,
+                  showExchangeModal: true,
                   currentRedeemCode: prize.redeemCode 
                 });
               } else if (isPrize2To4) {
@@ -150,7 +150,7 @@ class MyWard extends Component {
   };
 
   render() {
-    const { prizeList, isListLoading, showExchangeModel, currentRedeemCode } = this.state;
+    const { prizeList, isListLoading, showExchangeModal, currentRedeemCode } = this.state;
     const isInClient = LightMobileCall.isInClient();
     const sharePosterConfig = this.props.sharePosterConfig;
 
@@ -169,17 +169,12 @@ class MyWard extends Component {
           ))}
         </div>
 
-        {showExchangeModel && (
-          <ExchangeModel 
-            shareConfig={sharePosterConfig}
-            exchangeCode={currentRedeemCode}
-            onClose={() => this.setState({ showExchangeModel: false })}
-            onExchange={(redeemCode) => {
-              const targetPrize = this.state.prizeList.find(item => item.redeemCode === redeemCode);
-              this.handleBtnClick({ link: targetPrize?.url });
-            }}
-          />
-        )}
+        <ExchangeModal
+          visible={showExchangeModal}
+          shareConfig={sharePosterConfig}
+          exchangeCode={currentRedeemCode}
+          onClose={() => this.setState({ showExchangeModal: false })}
+        />
       </div>
     );
   }

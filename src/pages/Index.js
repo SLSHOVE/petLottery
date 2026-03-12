@@ -7,7 +7,7 @@ import { Toast } from '@cola/Toast';
 import { jumpPage, buildJupmUrl, baseInfo, callAppLogin, openLittleNest, closePage, handleSharePic, openNewPage} from '../utils/util'; 
 import Header from '../components/Header';
 import Tasks from '../components/Tasks';
-import { getLotteryInfo, lottery, lotteryTaskComplete, getPetChatInfoCore, getLotteryRewardList } from '../assets/api';
+import { getLotteryInfo, lottery, lotteryTaskComplete, getPetChatInfoCore } from '../assets/api';
 import { getGlobalEvent } from '../utils/eventEmitter';
 import LightMobileCall from '@kugou/light-mobilecall';
 import SharePoster from '../components/SharePoster';
@@ -542,6 +542,13 @@ class Index extends Component {
       const res = await lottery();
       if (res?.data?.code === 0) {
         const rewardData = res?.data?.data || {};
+        // console.log('[调试] 抽奖返回', {
+        //   fullResData: res?.data,
+        //   rewardData,
+        //   rewardId: rewardData.rewardId,
+        //   rewardType: rewardData.rewardType,
+        //   redeemCode: rewardData.redeemCode
+        // });
         const rewardId = rewardData.rewardId || 0;
         const rewardType = rewardData.rewardType || 0; //获取type
         const rewardUrl = rewardData.url || '';
@@ -617,6 +624,13 @@ class Index extends Component {
       const { currentRewardId, currentRewardType, currentRewardUrl, currentRedeemCode } = this.state;
       const prizeId = String(currentRewardId);
       const isPrize1 = prizeId === '1' && currentRewardType === 1;
+      // console.log('[调试] 点击去领取', {
+      //   currentRewardId,
+      //   currentRewardType,
+      //   prizeId,
+      //   isPrize1,
+      //   currentRedeemCode
+      // });
       const isPrize2To4 = ['2', '3', '4'].includes(prizeId);
       const isPrize5 = prizeId === '5';
 
@@ -637,26 +651,24 @@ class Index extends Component {
     });
   };
 
-  handleExchange = async (redeemCode) => {
-    try {
-      //getLotteryRewardList 接口
-      const res = await getLotteryRewardList();
-      if (res?.data?.code === 0 && Array.isArray(res.data?.data?.rewardList)) {
-        // 找到当前兑换码对应的奖品URL
-        const targetPrize = res.data.data.rewardList.find(
-          item => item.redeemCode === redeemCode
-        );
-        if (targetPrize?.url) {
-          LightMobileCall.mobileCall(123, { url: targetPrize.url, browser: 4 });
-        } else {
-          Toast.info({ content: '暂无跳转链接' });
-        }
-      }
-    } catch (error) {
-      console.error('兑换跳转失败:', error);
-      Toast.info({ content: '兑换跳转失败，请稍后重试' });
-    }
-  };
+  // handleExchange = async (redeemCode) => {
+  //   try {
+  //     const res = await getLotteryRewardList();
+  //     if (res?.data?.code === 0 && Array.isArray(res.data?.data?.rewardList)) {
+  //       const targetPrize = res.data.data.rewardList.find(
+  //         item => item.redeemCode === redeemCode
+  //       );
+  //       if (targetPrize?.url) {
+  //         LightMobileCall.mobileCall(123, { url: targetPrize.url, browser: 4 });
+  //       } else {
+  //         Toast.info({ content: '暂无跳转链接' });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('兑换跳转失败:', error);
+  //     Toast.info({ content: '兑换跳转失败，请稍后重试' });
+  //   }
+  // };
 
   render () {
     const { 
@@ -754,11 +766,10 @@ class Index extends Component {
               rewardId={currentRewardId}
               rewardUrl={currentRewardUrl}
             />
-            <ExchangeModal 
+            <ExchangeModal
               shareConfig={sharePosterConfig}
               exchangeCode={currentRedeemCode}
               onClose={() => this.setState({ showExchangeModal: false })}
-              onExchange={this.handleExchange}
               visible={showExchangeModal}
             />
           </>

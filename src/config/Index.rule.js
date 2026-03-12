@@ -48,50 +48,15 @@ module.exports = {
         name: '奖品文案配置',
         type: propTypes.object,
         children: {
-            text2001: {
-                name: '2001配置文案',
-                type: propTypes.string
-            },
-            text2002: {
-                name: '2002配置文案',
-                type: propTypes.string
-            },
-            text2003: {
-                name: '2003配置文案',
-                type: propTypes.string
-            },
-            text3001: {
-                name: '3001配置文案',
-                type: propTypes.string
-                },
-            text3002: {
-                name: '3002配置文案',
-                type: propTypes.string
-            },
-            text1001: {
-                name: '优惠券配置文案',
-                type: propTypes.string
-            },
-            text4001: {
-                name: '宠物道具配置文案',
-                type: propTypes.string
-            },
-            text5001: {
-                name: '福·酷小狗',
-                type: propTypes.string
-            },
-            text5002: {
-                name: '福·雪纳瑞',
-                type: propTypes.string
-            },
-            text5003: {
-                name: '福·哈基米',
-                type: propTypes.string
-            },
             textDefault: {
                 name: '默认配置文案',
                 type: propTypes.string
             },
+            text1: { name: '1号奖品文案', type: propTypes.string },
+            text2: { name: '2号奖品文案', type: propTypes.string },
+            text3: { name: '3号奖品文案', type: propTypes.string },
+            text4: { name: '4号奖品文案', type: propTypes.string },
+            text5: { name: '5号奖品文案', type: propTypes.string },
         }
     },   
     useSharePic: {
