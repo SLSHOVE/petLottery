@@ -2,7 +2,6 @@ import React from 'react';
 import { Toast } from '../../utils/common';
 import styles from './index.module.css';
 import prize from './images/prize.png';
-// 新增：引入兑换所需的API和工具
 import { getLotteryRewardList } from '../../assets/api';
 import LightMobileCall from '@kugou/light-mobilecall';
 
