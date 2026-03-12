@@ -23,6 +23,9 @@ import { apmLog } from '../utils/apmLog';
 const eventBus = getGlobalEvent();
 const data = combineSubmodule('Index');
 
+// 活动未开始或已经结束时返回的错误码（前置检查）
+const ACTIVITY_NOT_AVAILABLE_CODE = 100602;
+
 class Index extends Component {
   state = {
     rewardConfig: [],
@@ -164,6 +167,18 @@ class Index extends Component {
     if (LightMobileCall.isInClient()) {
       try {
         res = await getLotteryInfo();
+        // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
+        if (res?.data?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+          this.setState({
+            isActivityEnded: true,
+            isLoginLoading: false,
+            showEmptyImage: true
+          }, () => {
+            Toast.info({ content: '活动已结束' });
+            setTimeout(() => closePage(), 2500);
+          });
+          return;
+        }
         if (res?.data?.code === 0) {
           const data = res?.data?.data || {};
           const endTime = data.endTime;
@@ -213,6 +228,18 @@ class Index extends Component {
           });
         }
       } catch (err) {
+        // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
+        if (err?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+          this.setState({
+            isActivityEnded: true,
+            isLoginLoading: false,
+            showEmptyImage: true
+          }, () => {
+            Toast.info({ content: '活动已结束' });
+            setTimeout(() => closePage(), 2500);
+          });
+          return;
+        }
         apmLog({
           typeid: 111645,
           state: 0,
@@ -449,7 +476,13 @@ class Index extends Component {
       mask: true,
     });
     try {
-      await lotteryTaskComplete(taskId);
+      const res = await lotteryTaskComplete(taskId);
+      // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
+      if (res?.data?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+        this.setState({ isActivityEnded: true });
+        Toast.info({ content: '活动已结束' });
+        return;
+      }
       apmLog({
         typeid: 111645,
         state: 1,
@@ -458,6 +491,12 @@ class Index extends Component {
       });
       this.initData();
     } catch (err) {
+      // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
+      if (err?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+        this.setState({ isActivityEnded: true });
+        Toast.info({ content: '活动已结束' });
+        return;
+      }
       const getbaseInfo = await baseInfo();
       apmLog({
         typeid: 111645,
@@ -540,6 +579,12 @@ class Index extends Component {
     const getbaseInfo = await baseInfo();
     try {
       const res = await lottery();
+      // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
+      if (res?.data?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+        this.setState({ isActivityEnded: true });
+        Toast.info({ content: '活动已结束，感谢参与~' });
+        return { success: false };
+      }
       if (res?.data?.code === 0) {
         const rewardData = res?.data?.data || {};
         // console.log('[调试] 抽奖返回', {
@@ -582,11 +627,16 @@ class Index extends Component {
             this.setState({ showRewardModal: true });
           }
         };
-      } else {
-        Toast.fail(`抽奖失败，请稍后重试`);
+      }
+      Toast.fail(`抽奖失败，请稍后重试`);
+      return { success: false };
+    } catch (err) {
+      // 活动未开始或已经结束时返回的错误码（前置检查）
+      if (err?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
+        this.setState({ isActivityEnded: true });
+        Toast.info({ content: '活动已结束，感谢参与~' });
         return { success: false };
       }
-    } catch (err) {
       apmLog({
         typeid: 111645,
         state: 0,

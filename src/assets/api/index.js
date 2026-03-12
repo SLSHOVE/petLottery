@@ -84,7 +84,7 @@ export async function getLotteryInfo() {
  * @method POST
  * @url /kugoupet/activity/lotteryTaskReward
  * @param {number} taskId - 任务ID（必填）
- * @return {Promise} 响应包含：taskInfo(任务信息)、addLotteryNum(新增抽奖次数)、lotteryNum(当前抽奖次数)
+ * @return {Promise} 响应包含：taskInfo(任务信息)、addLotteryNum(抽奖次数)、lotteryNum(当前抽奖次数)
  */
 export async function lotteryTaskReward(taskId = 0) {
     const userBaseInfo = await baseInfo();
