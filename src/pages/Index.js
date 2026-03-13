@@ -267,10 +267,7 @@ class Index extends Component {
         this.setState({ isLoginLoading: false });  
         loading.hide();
       }
-      setTimeout(() => {
-        console.log('========vs_finish');
         window.vs_finish && window.vs_finish();
-      }, 500);  
     }
     if (!LightMobileCall.isInClient()) {
       window.vs_finish && window.vs_finish();
