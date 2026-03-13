@@ -42,7 +42,6 @@
     "@kugou/stat": "^3.0.8",
     "@kugou/voo-prop-types": "^1.0.7",
     "@kugou/webpack": "4.28.4",
-    "@kugou/webpack-skeleton-plugin": "^2.2.2",
     "@svgr/webpack": "4.1.0",
     "acorn": "^8.9.0",
     "axios": "^0.27.2",
@@ -169,7 +168,8 @@
     "@kugou/npm-picture-generator": "^2.0.24",
     "@kugou/open-kugou-app": "^5.0.0",
     "@kugou/request": "^2.2.4",
-    "@kugou/share": "^2.2.1",
+    "@kugou/share": "^3.0.1",
+    "@kugou/webpack-skeleton-plugin": "^2.2.2",
     "qrcode": "^1.5.4"
   },
   "useVpublicCache": 1,

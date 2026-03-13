@@ -140,6 +140,7 @@ class Index extends Component {
       });
     } finally {
       this.setState({ isPetCheckLoading: false });
+      loading.hide();
     }
   };
 
@@ -160,8 +161,14 @@ class Index extends Component {
   }
 
   initData = async () => {
-    if (this.state.isVersionForbidden) return;
-    if (this.state.isActivityEnded) return;
+    if (this.state.isVersionForbidden) {
+      loading.hide();
+      return;
+    }
+    if (this.state.isActivityEnded) {
+      loading.hide();
+      return;
+    }
     const getbaseInfo = await baseInfo();
     let res = null;
     if (LightMobileCall.isInClient()) {
@@ -177,6 +184,7 @@ class Index extends Component {
             Toast.info({ content: '活动已结束' });
             setTimeout(() => closePage(), 2500);
           });
+          loading.hide();
           return;
         }
         if (res?.data?.code === 0) {
@@ -193,6 +201,7 @@ class Index extends Component {
               Toast.info({ content: '活动已结束' });
               setTimeout(() => closePage(), 2500);
             })
+            loading.hide();
             return;
           }
 
@@ -205,6 +214,7 @@ class Index extends Component {
             isLoginLoading: false
           }, () => {
             this.transRewardConfig(data.rewardList || []);
+            loading.hide();
           });
           
           apmLog({
@@ -226,6 +236,7 @@ class Index extends Component {
             realtime1: window.location.href,
             page: getbaseInfo?.userid || 0 
           });
+          loading.hide();
         }
       } catch (err) {
         // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
@@ -238,6 +249,7 @@ class Index extends Component {
             Toast.info({ content: '活动已结束' });
             setTimeout(() => closePage(), 2500);
           });
+          loading.hide();
           return;
         }
         apmLog({
@@ -253,7 +265,14 @@ class Index extends Component {
           page: getbaseInfo?.userid || 0
         });
         this.setState({ isLoginLoading: false });  
+        loading.hide();
       }
+      setTimeout(() => {
+        console.log('========vs_finish');
+        window.vs_finish && window.vs_finish();
+      }, 500);  
+    }
+    if (!LightMobileCall.isInClient()) {
       window.vs_finish && window.vs_finish();
     }
   };
@@ -281,6 +300,9 @@ class Index extends Component {
     });
 
     loading.show();
+    // if (LightMobileCall.isInClient()) {
+    //   loading.show();
+    // }
     LightMobileCall.mobileCall(128, { state: 0 })
     LightMobileCall.mobileCall(1369, {type: 0});
     this.initData();
@@ -315,6 +337,7 @@ class Index extends Component {
     });
 
     eventBus.on('refresh', () => {
+      loading.show();
       this.initData();
     });
 
@@ -341,6 +364,7 @@ class Index extends Component {
         };
         this.setState({ isTaskSubmitting: true });
         await this.handleTaskReport(shareTask.taskId);
+        loading.show();
         this.initData();
       }
     });
@@ -350,6 +374,7 @@ class Index extends Component {
         res = JSON.parse(res);
       } catch (error) { }
       if (res?.status === 3) {
+        loading.show();
         eventBus.emit('refresh');
       }
     });
@@ -417,6 +442,7 @@ class Index extends Component {
           showEmptyImage: true, 
           isLoginLoading: false
         });
+        loading.hide();
         return
       } 
       const isLow = await this.getKgClientVersion();
@@ -430,6 +456,7 @@ class Index extends Component {
           showEmptyImage: true,
           isLoginLoading: false,
         });
+        loading.hide();
         return; 
       }
       this.setState({ 
@@ -454,8 +481,9 @@ class Index extends Component {
         realtime1: window.location.href,
         page: getbaseInfo?.userid || 0
       });
-    }finally{
       loading.hide();
+    }finally{
+        loading.hide();
     }
   };
 
@@ -464,6 +492,7 @@ class Index extends Component {
     if (!isKgClient && document.visibilityState === 'visible') {
       const { isTaskTriggered } = this.currentTaskInfo;
       if (isTaskTriggered) {
+        loading.show();
         this.initData();
         this.currentTaskInfo.isTaskTriggered = false;
       }
@@ -481,6 +510,7 @@ class Index extends Component {
       if (res?.data?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
         this.setState({ isActivityEnded: true });
         Toast.info({ content: '活动已结束' });
+        loading.hide();
         return;
       }
       apmLog({
@@ -495,6 +525,7 @@ class Index extends Component {
       if (err?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
         this.setState({ isActivityEnded: true });
         Toast.info({ content: '活动已结束' });
+        loading.hide();
         return;
       }
       const getbaseInfo = await baseInfo();
@@ -515,6 +546,7 @@ class Index extends Component {
     } finally {
       this.setState({ isTaskSubmitting: false });
       toast.remove();
+      loading.hide();
     }
   };
 
@@ -529,6 +561,7 @@ class Index extends Component {
     eventBus.off('browseTaskComplete');
     eventBus.off('openExchangeModal');
     document.removeEventListener('visibilitychange', this.handleBrowserVisibilityChange);
+    loading.hide();
   }
 
   // 滚动到任务区
@@ -556,6 +589,7 @@ class Index extends Component {
     
     if (isActivityEnded) {
       Toast.info({ content: '活动已结束，感谢参与~' });
+      loading.hide();
       return { success: false };
     }
     if (lotteryNum <= 0) {
@@ -578,11 +612,13 @@ class Index extends Component {
 
     const getbaseInfo = await baseInfo();
     try {
+      loading.show();
       const res = await lottery();
       // 活动未开始或已经结束时返回的错误码（前置检查），不作为异常上报 
       if (res?.data?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
         this.setState({ isActivityEnded: true });
         Toast.info({ content: '活动已结束，感谢参与~' });
+        loading.hide();
         return { success: false };
       }
       if (res?.data?.code === 0) {
@@ -620,6 +656,7 @@ class Index extends Component {
           page: 0
         });
 
+        loading.hide();
         return {
           success: true,
           rewardId: rewardId,
@@ -629,12 +666,14 @@ class Index extends Component {
         };
       }
       Toast.fail(`抽奖失败，请稍后重试`);
+      loading.hide();
       return { success: false };
     } catch (err) {
       // 活动未开始或已经结束时返回的错误码（前置检查）
       if (err?.code === ACTIVITY_NOT_AVAILABLE_CODE) {
         this.setState({ isActivityEnded: true });
         Toast.info({ content: '活动已结束，感谢参与~' });
+        loading.hide();
         return { success: false };
       }
       apmLog({
@@ -650,6 +689,7 @@ class Index extends Component {
         page: getbaseInfo?.userid || 0
       });
       Toast.fail(`抽奖失败，请稍后重试`);
+      loading.hide();
       return { success: false };
     }
   };
