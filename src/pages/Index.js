@@ -104,6 +104,7 @@ class Index extends Component {
     try {
       const [response] = await getPetChatInfoCore();
       if (!response) {
+        console.log('response', response);
         throw new Error("网络异常，请稍后重试...");
       }
       apmLog({
@@ -112,8 +113,10 @@ class Index extends Component {
         para: 14,
         page: 0
       });
+      // console.log('response', response);
       const isAdopted = response?.hasAdopt === 1;
       if (!isAdopted) {
+        console.log('isAdopted', isAdopted);
         Toast.info({ 
           content: "请先领养宠物再来参加抽奖活动~",
           duration: 2500 
@@ -268,9 +271,11 @@ class Index extends Component {
         loading.hide();
       }
         window.vs_finish && window.vs_finish();
+        LightMobileCall.mobileCall(1203)
     }
     if (!LightMobileCall.isInClient()) {
       window.vs_finish && window.vs_finish();
+      LightMobileCall.mobileCall(1203)
     }
   };
 
@@ -278,20 +283,12 @@ class Index extends Component {
     LightMobileCall.KgWebMobileCall("KgWebMobileCall.shareStatus", (res) => {
       try {
         res = JSON.parse(res);
+        console.log('res', res);
       } catch (error) {}
-      
-      if (window.isClickShareBtn === 1 && Number(res.status) === 1) {
+      console.log('看看是否有值shareStatus', res?.status);
+      // 分享按钮点击后，设置全局变量，用于客户端回调判断是否成功
+      if (window.isClickShareBtn === 1 && Number(res.status) != null) {
         eventBus.emit('titleBarShareSuccess'); 
-      }
-    });
-
-    // 115 分享结果回调：酷狗动态等端内分享不离开客户端，只能通过客户端回调判断是否成功
-    LightMobileCall.KgWebMobileCall("KgWebMobileCall.shareResult", (res) => {
-      try {
-        res = typeof res === 'string' ? JSON.parse(res) : res;
-      } catch (e) {}
-      if (window.isClickShareBtn === 1 && Number(res?.status) === 1) {
-        eventBus.emit('titleBarShareSuccess');
       }
     });
   };

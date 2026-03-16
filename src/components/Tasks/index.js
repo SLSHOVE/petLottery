@@ -234,6 +234,7 @@ const Tasks = (props) => {
           Toast.info({ content: '分享图加载中，请稍候' });
           return;
         }
+        // 分享按钮点击后，设置全局变量，用于客户端回调判断是否成功
         window.isClickShareBtn = 1;
         const config = shareDataRef.current;
         if (config) {
