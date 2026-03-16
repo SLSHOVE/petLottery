@@ -1,12 +1,20 @@
-import React from 'react';
-import { Toast } from '../../utils/common';
+import React, { useEffect } from 'react';
+import { Toast, prizeMap } from '../../utils/common';
 import styles from './index.module.css';
 import prize from './images/prize.png';
 import { getLotteryRewardList } from '../../assets/api';
 import LightMobileCall from '@kugou/light-mobilecall';
 
-const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false }) => {
+const EXCHANGE_TITLE_MAP = {
+  1: '恭喜获得【富养包 1kg】免单券',
+  2: '恭喜获得【富养包猫粮/犬粮35g】',
+  3: '恭喜获得【39-20大额券】'
+};
+
+const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false, prizeId = 1 }) => {
   const currentCode = exchangeCode || '暂无兑换码';
+  const exchangeTitle = EXCHANGE_TITLE_MAP[Number(prizeId)] || EXCHANGE_TITLE_MAP[1];
+  const prizeImage = prizeMap[String(prizeId)]?.src || prize;
 
   //使用父组件传入的兑换码
   const handleCopy = async () => {
@@ -69,6 +77,20 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false }) 
     onClose && onClose();
   };
 
+  // 弹窗打开时禁止背后页面滚动（body + 主页滚动容器 #page/.wrap），关闭时恢复
+  useEffect(() => {
+    if (!visible) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const pageEl = document.getElementById('page');
+    const prevPageOverflow = pageEl ? pageEl.style.overflow : '';
+    document.body.style.overflow = 'hidden';
+    if (pageEl) pageEl.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      if (pageEl) pageEl.style.overflow = prevPageOverflow;
+    };
+  }, [visible]);
+
   if (!visible) return null;
 
   return (
@@ -82,11 +104,11 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false }) 
 
         <>
           <img
-            src={prize}
+            src={prizeImage}
             className={styles.prize}
             alt=''
           />
-          <h2 className={styles.exchangeTitle}>恭喜获得【富养包 1kg】免单券</h2>
+          <h2 className={styles.exchangeTitle}>{exchangeTitle}</h2>
           <div className={styles.codeRow}>
             <span className={styles.codeLabel}>兑换码 |</span>
             {/* 显示传入的兑换码 */}

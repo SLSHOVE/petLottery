@@ -23,7 +23,8 @@ class MyWard extends Component {
     isLoading: false,
     isListLoading: false,
     showExchangeModal: false,
-    currentRedeemCode: '' // 仅新增：存储当前兑换码
+    currentRedeemCode: '',
+    currentPrizeId: 1 // 用于 ExchangeModal 显示对应奖品标题（1/2/3）
   };
 
   formatTime = (timestamp) => {
@@ -107,12 +108,13 @@ class MyWard extends Component {
   };
 
   renderPrizeItem = (prize) => {
-    const prizeId = String(prize.id); 
+    const prizeId = String(prize.id);
     const prizeType = prize.type;
-    const isPrize1 = prizeId === '1' && prizeType === 1; // 仅修改：精准判断rewardId和rewardType均为1
-    const isPrize2To4 = ['2', '3', '4'].includes(prizeId);
+    const isPrize1 = prizeId === '1' && prizeType === 1;
+    const isPrize2Or3 = ['2', '3'].includes(prizeId);
+    const isPrize4 = prizeId === '4';
     const isPrize5 = prizeId === '5';
-    const showUseBtn = isPrize1 || isPrize2To4 || isPrize5;
+    const showUseBtn = isPrize1 || isPrize2Or3 || isPrize4 || isPrize5;
 
     return (
       <div className={styles.listItem} key={`${prize.id}_${prize.date}`}>
@@ -130,13 +132,13 @@ class MyWard extends Component {
           <button 
             className={styles.useBtn}
             onClick={() => {
-              if (isPrize1) {
-                // 设置当前兑换码并打开弹窗
-                this.setState({ 
+              if (isPrize1 || isPrize2Or3) {
+                this.setState({
                   showExchangeModal: true,
-                  currentRedeemCode: prize.redeemCode 
+                  currentRedeemCode: prize.redeemCode,
+                  currentPrizeId: prize.id
                 });
-              } else if (isPrize2To4) {
+              } else if (isPrize4) {
                 this.handleBtnClick({ link: prize.url });
               } else if (isPrize5) {
                 this.petHandleUse();
@@ -151,7 +153,7 @@ class MyWard extends Component {
   };
 
   render() {
-    const { prizeList, isListLoading, showExchangeModal, currentRedeemCode } = this.state;
+    const { prizeList, isListLoading, showExchangeModal, currentRedeemCode, currentPrizeId } = this.state;
     const isInClient = LightMobileCall.isInClient();
     const sharePosterConfig = this.props.sharePosterConfig;
 
@@ -174,6 +176,7 @@ class MyWard extends Component {
           visible={showExchangeModal}
           shareConfig={sharePosterConfig}
           exchangeCode={currentRedeemCode}
+          prizeId={currentPrizeId}
           onClose={() => this.setState({ showExchangeModal: false })}
         />
       </div>

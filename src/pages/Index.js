@@ -718,28 +718,19 @@ class Index extends Component {
       const { currentRewardId, currentRewardType, currentRewardUrl, currentRedeemCode } = this.state;
       const prizeId = String(currentRewardId);
       const isPrize1 = prizeId === '1' && currentRewardType === 1;
-      // console.log('[调试] 点击去领取', {
-      //   currentRewardId,
-      //   currentRewardType,
-      //   prizeId,
-      //   isPrize1,
-      //   currentRedeemCode
-      // });
-      const isPrize2To4 = ['2', '3', '4'].includes(prizeId);
+      const isPrize2Or3 = ['2', '3'].includes(prizeId);
+      const isPrize4 = prizeId === '4';
       const isPrize5 = prizeId === '5';
 
-      //根据奖品类型执行对应操作
-      if (isPrize1) {
-        // 唤起ExchangeModal并传递兑换码
+      // 1、2、3：唤起 ExchangeModal（兑换码+去兑换）；4：直接跳转；5：去喂养
+      if (isPrize1 || isPrize2Or3) {
         this.setState({
           showExchangeModal: true,
           currentRedeemCode: currentRedeemCode
         });
-      } else if (isPrize2To4) {
-        // 跳转链接
+      } else if (isPrize4) {
         this.handleBtnClick({ link: currentRewardUrl });
       } else if (isPrize5) {
-        // 去喂养
         this.petHandleUse();
       }
     });
@@ -863,6 +854,7 @@ class Index extends Component {
             <ExchangeModal
               shareConfig={sharePosterConfig}
               exchangeCode={currentRedeemCode}
+              prizeId={currentRewardId}
               onClose={() => this.setState({ showExchangeModal: false })}
               visible={showExchangeModal}
             />
