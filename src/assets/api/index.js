@@ -2,37 +2,37 @@ import KGRequest from '@kugou/request';
 import { baseInfo } from '../../utils/util';
 
 // 通用请求函数
-const fxRequest = async (options) => {
-    const userBaseInfo = await baseInfo()
-    // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
-    const params = {
-        std_plat: +userBaseInfo?.appid === 1000 ? 6 : 5,
-        std_nplat: 0,
-        version: userBaseInfo?.clientver,
-        ...(options?.params || {}),
-    }
-    const headers = [
-        { 'X-Auth-Uid': userBaseInfo?.userid || 0 },
-        { 'X-Auth-Token-Type': userBaseInfo?.appid },
-        { 'X-Auth-Ticket': userBaseInfo?.token || '' },
-        { 'X-Auth-App-ID': "kugou" },
-        { 'Content-Type': "application/json" },
-        ...(options?.headers || []),
-    ]
-    const requestOptions = {
-        // TODO 正式服替换为：https://fx.service.kugou.com
-        // 测试服：https://fxapi.test.tmeoa.com
-        baseURL: 'https://fxapi.test.tmeoa.com',
-        isGateway: false,
-        ...options,
-        headers,
-        params,
-    }
-    return KGRequest(requestOptions)
-}
+// const fxRequest = async (options) => {
+//     const userBaseInfo = await baseInfo()
+//     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
+//     const params = {
+//         std_plat: +userBaseInfo?.appid === 1000 ? 6 : 5,
+//         std_nplat: 0,
+//         version: userBaseInfo?.clientver,
+//         ...(options?.params || {}),
+//     }
+//     const headers = [
+//         { 'X-Auth-Uid': userBaseInfo?.userid || 0 },
+//         { 'X-Auth-Token-Type': userBaseInfo?.appid },
+//         { 'X-Auth-Ticket': userBaseInfo?.token || '' },
+//         { 'X-Auth-App-ID': "kugou" },
+//         { 'Content-Type': "application/json" },
+//         ...(options?.headers || []),
+//     ]
+//     const requestOptions = {
+//         // TODO 正式服替换为：https://fx.service.kugou.com
+//         // 测试服：https://fxapi.test.tmeoa.com
+//         baseURL: 'https://fxapi.test.tmeoa.com',
+//         isGateway: false,
+//         ...options,
+//         headers,
+//         params,
+//     }
+//     return KGRequest(requestOptions)
+// }
 
 // 宠物接口专用请求函数
-const fxRequest1 = async (options) => {
+const fxRequest = async (options) => {
     const userBaseInfo = await baseInfo()
     // 规范： http://wiki.kugou.net/pages/viewpage.action?pageId=25156183
     const params = {
@@ -162,7 +162,7 @@ export async function lotteryTaskComplete(taskId = 0) {
 
 export async function getPetChatInfoCore() {
     try {
-        const res = await fxRequest1({
+        const res = await fxRequest({
             method: 'get',
             url: '/kugoupet/public/chatInfo',
             isAllowKGAntiBush: false,
