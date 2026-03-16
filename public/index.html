@@ -18,13 +18,13 @@
   <script>
     //低版本兼容
     var ua = navigator.userAgent.toLowerCase();
-    function iOS12() {
+    function iOS13() {
       var i;
       if (0 < ua.indexOf("like mac os x")) {
           i = (ua.match(/os [\d._]*/gi) + "").replace(/[^0-9|_.]/gi, "").replace(/_/gi, ".")
       }
       var e = i + "";
-      return "undefined" !== e && 0 < e.length && 12 <= Number(i.substring(0, 2))
+      return "undefined" !== e && 0 < e.length && 13 <= Number(i.substring(0, 2))
     }
     function getAndroidVersion(i) {
       var e;
@@ -36,7 +36,7 @@
     }
     var isIos = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
     if (isIos)
-        iOS12() || (window.location.href = "https://activity.kugou.com/upgrading/v-63139064/index.html");
+        iOS13() || (window.location.href = "https://activity.kugou.com/upgrading/v-63139064/index.html");
     else {
         var androidVersion = getAndroidVersion();
         androidVersion && androidVersion < 8 && 0 < navigator.userAgent.toLowerCase().indexOf("android") && (window.location.href = "https://activity.kugou.com/upgrading/v-63139064/index.html")
