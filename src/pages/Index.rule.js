@@ -12,6 +12,7 @@ class Rule extends Component {
 
   componentDidMount() {
     window.vs_finish && window.vs_finish();
+    LightMobileCall.mobileCall(1203)
     mobileLog({
               a: 1134953,
               b: '曝光',

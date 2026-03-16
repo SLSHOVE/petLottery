@@ -70,6 +70,7 @@ class MyWard extends Component {
   componentDidMount() {
     this.initData();
     window.vs_finish && window.vs_finish();
+    LightMobileCall.mobileCall(1203)
     mobileLog({
           a: 1134953,
           b: '曝光',
