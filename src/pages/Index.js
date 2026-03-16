@@ -283,7 +283,17 @@ class Index extends Component {
       if (window.isClickShareBtn === 1 && Number(res.status) === 1) {
         eventBus.emit('titleBarShareSuccess'); 
       }
-    })
+    });
+
+    // 115 分享结果回调：酷狗动态等端内分享不离开客户端，只能通过客户端回调判断是否成功
+    LightMobileCall.KgWebMobileCall("KgWebMobileCall.shareResult", (res) => {
+      try {
+        res = typeof res === 'string' ? JSON.parse(res) : res;
+      } catch (e) {}
+      if (window.isClickShareBtn === 1 && Number(res?.status) === 1) {
+        eventBus.emit('titleBarShareSuccess');
+      }
+    });
   };
   
   componentDidMount () {
@@ -334,7 +344,7 @@ class Index extends Component {
     });
 
     eventBus.on('refresh', () => {
-      loading.show();
+      // loading.show();
       this.initData();
     });
 
@@ -864,8 +874,9 @@ class Index extends Component {
       </>
     );
 
+    const isLoginEmpty = LightMobileCall.isInClient() && !needRedirect && showEmptyImage;
     return (
-      <div className={styles.wrap} id="page">
+      <div className={isLoginEmpty ? styles.wrapLoginBg : styles.wrap} id="page">
         {LightMobileCall.isInClient()?(
           needRedirect ? (
             <>
