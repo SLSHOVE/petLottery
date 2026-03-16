@@ -127,7 +127,6 @@
   z-index: 101;
   overflow: hidden;
   border-radius: 8px;
-  transform: translateZ(0); /* iOS11 下配合 overflow:hidden 正确裁剪滚动中的奖品 */
   /* background-color: #955616; */
 }
 
@@ -147,8 +146,6 @@
 .rolling {
   animation: rollFull 0.15s linear infinite;
   transition: none;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 }
 
 @keyframes rollFull {
