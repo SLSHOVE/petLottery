@@ -16,7 +16,20 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false, pr
   const exchangeTitle = EXCHANGE_TITLE_MAP[Number(prizeId)] || EXCHANGE_TITLE_MAP[1];
   const prizeImage = prizeMap[String(prizeId)]?.src || prize;
 
-  //使用父组件传入的兑换码
+  // 使用父组件传入的兑换码，兼容小米等 Android：Clipboard API 失败时用 execCommand 备援
+  const copyByExecCommand = () => {
+    const input = document.createElement('input');
+    input.setAttribute('readonly', 'readonly');
+    input.value = currentCode;
+    input.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
+    document.body.appendChild(input);
+    input.focus();
+    input.setSelectionRange(0, currentCode.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(input);
+    return ok;
+  };
+
   const handleCopy = async () => {
     if (!currentCode || currentCode === '暂无兑换码') {
       Toast('暂无兑换码');
@@ -27,18 +40,20 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false, pr
         await navigator.clipboard.writeText(currentCode);
         Toast('复制成功');
       } else {
-        //兼容旧浏览器
-        const input = document.createElement('input');
-        input.value = currentCode;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        Toast('复制成功');
+        if (copyByExecCommand()) {
+          Toast('复制成功');
+        } else {
+          Toast('复制失败');
+        }
       }
     } catch (error) {
-      console.error('复制失败:', error);
-      Toast('复制失败');
+      // 小米等 WebView 上 Clipboard API 可能抛错，改用 execCommand 备援
+      if (copyByExecCommand()) {
+        Toast('复制成功');
+      } else {
+        console.error('复制失败:', error);
+        Toast('复制失败');
+      }
     }
   };
 
