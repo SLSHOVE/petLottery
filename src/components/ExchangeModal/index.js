@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
-import { Toast, prizeMap } from '../../utils/common';
+import { Toast } from '../../utils/common';
 import styles from './index.module.css';
 import prize from './images/prize.png';
+import prize1 from './images/prize1.png';
+import prize2 from './images/prize2.png';
 import { getLotteryRewardList } from '../../assets/api';
 import LightMobileCall from '@kugou/light-mobilecall';
 
@@ -11,10 +13,16 @@ const EXCHANGE_TITLE_MAP = {
   3: '恭喜获得【39-20大额券】'
 };
 
+const EXCHANGE_IMAGE_MAP = {
+  1: prize,
+  2: prize1,
+  3: prize2
+};
+
 const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false, prizeId = 1 }) => {
   const currentCode = exchangeCode || '暂无兑换码';
   const exchangeTitle = EXCHANGE_TITLE_MAP[Number(prizeId)] || EXCHANGE_TITLE_MAP[1];
-  const prizeImage = prizeMap[String(prizeId)]?.src || prize;
+  const prizeImage = EXCHANGE_IMAGE_MAP[Number(prizeId)] || prize;
 
   // 使用父组件传入的兑换码，兼容小米等 Android：Clipboard API 失败时用 execCommand 备援
   const copyByExecCommand = () => {
@@ -120,6 +128,7 @@ const ExchangeModal = ({ shareConfig, exchangeCode, onClose, visible = false, pr
         <>
           <img
             src={prizeImage}
+            // className={`${styles.prize} ${styles[`prize${Number(prizeId) || 1}`] || styles.prize1}`}
             className={styles.prize}
             alt=''
           />

@@ -18,6 +18,7 @@ import kg20EmptyLogin from '@cola/KGImage/src/assets/kg20/empty-login.js';
 import {loading} from '../utils/common'
 import mobileLog from "../utils/mobileLog";
 import { apmLog } from '../utils/apmLog';
+import callButtonImg from '../assets/image/callButtonImg.png';
 // import share from '@kugou/share';
 
 const eventBus = getGlobalEvent();
@@ -895,7 +896,8 @@ class Index extends Component {
                 className = {styles.callButton}
                 onClick={callAppLogin}
               >
-                去酷狗参与抽奖
+                {/* 去酷狗参与抽奖 */}
+                <img src={callButtonImg} alt="去酷狗参与抽奖" className={styles.callButtonImg} />
               </button>
             </div>
             <Header

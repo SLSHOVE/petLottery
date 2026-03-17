@@ -54,10 +54,23 @@
 .prize {
   position: absolute;
   top: 428.64px;
-  width: auto;
-  /* height: 446.43px; */
+  height: auto;
   pointer-events: none;
+  width: 500px;
+  height: auto;
 }
+
+/* .prize1 {
+  width: 500px;
+}
+
+.prize2 {
+  width: 500px;
+}
+
+.prize3 {
+  width: 500px;
+} */
 
 .exchangeTitle {
   position: absolute;
