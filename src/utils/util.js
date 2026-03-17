@@ -134,7 +134,8 @@ export const handleSharePic = ({
   void onStatusChange?.('loading');
 
   if (!useSharePic) {
-    const finalConfig = { ...defaultShareConfig };
+    let finalConfig = { ...defaultShareConfig };
+    finalConfig.url = window.location.href;
     share.resetShareData(finalConfig);
     console.log("【share.resetShareData】传入的配置：", finalConfig,);
     console.log("【share.defaultShareConfig】传入的配置：", defaultShareConfig);

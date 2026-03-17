@@ -2,7 +2,7 @@ module.exports = {
     sharePosterConfig: {
         title: '来酷狗领狗粮',
         content: '酷狗X贵族发狗粮啦！大把宠物福利等你来抽~',
-        url: 'https://activity.kugou.com/petLottery/v-4c548690/index.html',
+        // url: window.location.href,
         img: 'https://voowebpbssdl.kugou.com/fad8790d491438cb3e84daed72506a81.png',
         poster: '',
         withoutQrPoster: '',
