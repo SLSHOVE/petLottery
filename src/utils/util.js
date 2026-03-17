@@ -18,7 +18,7 @@ export function baseInfo() {
 export async function checkLogin() {
     const baseinfo = await baseInfo();
     if (!baseinfo.userid) {
-        LightMobileCall.mobileCall(102, { topicName: "养狗春节挖宝", loginType: null });
+        LightMobileCall.mobileCall(102, { topicName: "宠物贵族抽奖", loginType: null });
         return false
     }
     return true
@@ -44,7 +44,7 @@ export const callAppLogin = () => {
     }
     openKugouApp("303", 9, 0, {
         url: window.location.href,
-        title: "宠物挖宝",
+        title: "宠物贵族抽奖",
     });
 }
 
