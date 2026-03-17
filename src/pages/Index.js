@@ -900,16 +900,27 @@ class Index extends Component {
                 <img src={callButtonImg} alt="去酷狗参与抽奖" className={styles.callButtonImg} />
               </button>
             </div>
-            <Header
-              chanceCount={lotteryNum}
-              rewardConfig={rewardConfig}
-              dataInited={dataInited}
-              onRuleClick={this.handleRuleClick}
-              onPrizeClick={this.handlePrizeClick}
-              onRaffle={this.handleRaffle}
-              onHeaderReady={() => this.setState({ isHeaderReady: true })}
+            <div className={styles.overlapContainer}>
+              <div className={styles.headerLayer}>
+                <Header
+                  chanceCount={lotteryNum}
+                  rewardConfig={rewardConfig}
+                  dataInited={dataInited}
+                  onRuleClick={this.handleRuleClick}
+                  onPrizeClick={this.handlePrizeClick}
+                  onRaffle={this.handleRaffle}
+                  onHeaderReady={() => this.setState({ isHeaderReady: true })}
+                />
+              </div>
+          </div>
+          <div id="task-area" className={styles.tasksStage}>
+            <img
+              src='https://voowebpbssdl.kugou.com/eada3261b27f1a957fc25373fbbaa68a.png'
+              className={styles.taskBg}
+              alt=''
             />
-          </>
+        </div>
+        </>
         )}
       </div>
     );
