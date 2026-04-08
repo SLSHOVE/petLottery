@@ -63,8 +63,10 @@ const Tasks = (props) => {
     isTaskSubmitting = false,
     iOS_TARGET_VERSION = '',
     Android_TARGET_VERSION = '',
-    iOSVipUrl = '',
-    AndroidVipUrl = '',
+    iOS_VipUrl = '',
+    iOS_SvipUrl = '',
+    Android_VipUrl = '',
+    Android_SvipUrl = '',
     vipIcon = '',
     svipIcon = '',
   } = props;
@@ -133,10 +135,10 @@ const Tasks = (props) => {
     });
   };
 
-  const openMemberPage = () => {
-    const url = LightMobileCall.isIOS ? iOSVipUrl : AndroidVipUrl;
+  const openMemberPage = (vipType) => {
+    const url = LightMobileCall.isIOS ? (vipType === 11 ? iOS_VipUrl : iOS_SvipUrl) : (vipType === 11 ? Android_VipUrl : Android_SvipUrl);
     if (!url) return;
-    LightMobileCall.mobileCall(123, { url, browser: 4 });
+    LightMobileCall.mobileCall(123, { url, browser: 17, enter_source : vipType === 11 ? 600 : 601 });
   };
 
   const claimTaskReward = async (taskId) => {
@@ -282,10 +284,10 @@ const Tasks = (props) => {
         handleShareTask();
         break;
       case 9:
-        openMemberPage();
+        openMemberPage(20);
         break;
       case 10:
-        openMemberPage();
+        openMemberPage(11);
         break;
       default:
         break;

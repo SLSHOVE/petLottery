@@ -63,12 +63,20 @@ module.exports = {
         name: '端外分享降级图片',
         type: propTypes.img
     },
-    vipUrl: {
-        name: 'Vip链接',
+    iOS_VipUrl: {
+        name: 'iOS Vip链接',
         type: propTypes.string
     },
-    SvipUrl: {
-        name: 'Svip链接',
+    iOS_SvipUrl: {
+        name: 'iOS Svip链接',
+        type: propTypes.string
+    },
+    Android_VipUrl: {
+        name: 'Android Vip链接',
+        type: propTypes.string
+    },
+    Android_SvipUrl: {
+        name: 'Android Svip链接',
         type: propTypes.string
     },
     petTaskUrl: {

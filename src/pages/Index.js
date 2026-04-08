@@ -769,7 +769,7 @@ class Index extends Component {
     } = this.state;
 
     const { 
-      sharePosterConfig, iOSVipUrl , AndroidVipUrl, petTaskUrl, vipIcon, svipIcon, useSharePic,
+      sharePosterConfig, iOS_VipUrl , Android_VipUrl, iOS_SvipUrl, Android_SvipUrl, petTaskUrl, vipIcon, svipIcon, useSharePic,
       iOS_TARGET_VERSION, Android_TARGET_VERSION
     } = this.props;
 
@@ -826,8 +826,10 @@ class Index extends Component {
                   tasks={tasks} 
                   taskConfig={taskConfig} 
                   shareConfig={sharePosterConfig} 
-                  iOSVipUrl={iOSVipUrl} 
-                  AndroidVipUrl={AndroidVipUrl} 
+                  iOS_VipUrl={iOS_VipUrl} 
+                  iOS_SvipUrl={iOS_SvipUrl}
+                  Android_VipUrl={Android_VipUrl}
+                  Android_SvipUrl={Android_SvipUrl}
                   petTaskUrl={petTaskUrl} 
                   vipIcon={vipIcon} 
                   svipIcon={svipIcon}
