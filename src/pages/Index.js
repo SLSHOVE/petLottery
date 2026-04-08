@@ -586,7 +586,10 @@ class Index extends Component {
   isAllTasksCompleted = () => {
     const { tasks } = this.state;
     if (!tasks || tasks.length === 0) return true;
-    return tasks.every(t => t.curNum >= t.taskNum && t.isAwarded);
+    return tasks.every(t => {
+      const isVipTask = Array.isArray(t.vipLotteryNumList) && t.vipLotteryNumList.length > 0;
+      return isVipTask ? t.isAwarded : (t.curNum >= t.taskNum && t.isAwarded);
+    });
   };
 
   handleRaffle = async () => {
@@ -766,7 +769,7 @@ class Index extends Component {
     } = this.state;
 
     const { 
-      sharePosterConfig, vipUrl, SvipUrl, petTaskUrl, vipIcon, useSharePic,
+      sharePosterConfig, iOSVipUrl , AndroidVipUrl, petTaskUrl, vipIcon, svipIcon, useSharePic,
       iOS_TARGET_VERSION, Android_TARGET_VERSION
     } = this.props;
 
@@ -823,10 +826,11 @@ class Index extends Component {
                   tasks={tasks} 
                   taskConfig={taskConfig} 
                   shareConfig={sharePosterConfig} 
-                  vipUrl={vipUrl} 
-                  SvipUrl={SvipUrl} 
+                  iOSVipUrl={iOSVipUrl} 
+                  AndroidVipUrl={AndroidVipUrl} 
                   petTaskUrl={petTaskUrl} 
                   vipIcon={vipIcon} 
+                  svipIcon={svipIcon}
                   useSharePic={useSharePic} 
                   isTaskSubmitting={this.state.isTaskSubmitting} 
                   iOS_TARGET_VERSION={iOS_TARGET_VERSION}

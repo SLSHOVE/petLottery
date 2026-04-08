@@ -51,7 +51,7 @@ const fxRequest = async (options) => {
     ]
     const requestOptions = {
         // TODO 正式服替换为：https://fx.service.kugou.com
-        baseURL: 'https://fx.service.kugou.com',
+        baseURL: 'https://fxapi.test.tmeoa.com',
         isGateway: false,
         ...options,
         headers,

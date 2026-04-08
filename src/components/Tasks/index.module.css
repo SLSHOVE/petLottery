@@ -42,6 +42,10 @@
     box-sizing: border-box;
     /* border-bottom: 1px solid #222; */
 }
+.taskItemVip{
+    height: auto;
+    height: 130px;
+}
 .taskContent{
     width: auto;
     height: 140px;
@@ -62,6 +66,10 @@
     margin-bottom: 4px;
     line-height: 40px;
 }
+.taskTitleVip{
+    color: rgba(149, 67, 0, 1);
+    font-size: 28px;
+}
 .taskDesc {
     font-size: 24px;
     color: #000000;
@@ -72,8 +80,26 @@
 .taskDescWrap {
     margin-top: 8px;
 }
+.vipTaskWrap{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+.vipTag{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 22px;
+    color: rgba(142, 64, 0, 1);
+    background: rgba(182, 106, 44, 0.1);
+    border: 1px solid rgba(152, 70, 16, 0.1);
+    white-space: nowrap;
+}
 .taskBtn{
-    width: 98.6px;
+    width: 121px;
     height: 44px;
     padding: 8px 16px;
     border-radius: 5.28px;
@@ -89,36 +115,17 @@
     gap: 4px;
     cursor: pointer;
      -webkit-tap-highlight-color: transparent;
-    background-image:url('https://voowebpbssdl.kugou.com/d70fc1a35e5e33529eb7dac95b504a7f.png');
-    background-size: contain;
-}
-.VipBtn{
-    width: 140px;
-    height: 50px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    /* background: #ff3e3e; */
-    color: #FFF3D8;
-    border: none;
-    font-size: 22px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-     -webkit-tap-highlight-color: transparent;
-    background-image:url('https://voowebpbssdl.kugou.com/61f0f47ef6192b9b4af53facb9bb8e6d.png');
+    background-image:url('https://voowebpbssdl.kugou.com/a9a1428b5e222d1479622238a777ee12.png');
     background-size: contain;
 }
 .finishBtn{
-    width: 98.6px;
+    width: 121px;
     height: 44px;
     padding: 8px 16px;
     border-radius: 5.28px;
     /* background: #ff3e3e; */
     color: #984610;
-    opacity: 0.6;
+    opacity: 0.4;
     border: none;
     font-size: 22px;
     font-weight: 500;
@@ -129,14 +136,12 @@
     gap: 4px;
     cursor: pointer;
      -webkit-tap-highlight-color: transparent;
-    background-image:url('https://voowebpbssdl.kugou.com/a230f3d126c02d386b1a7acfe76a5dba.png');
+    background-image:url('https://voowebpbssdl.kugou.com/a9a1428b5e222d1479622238a777ee12.png');
     background-size: contain;
 }
 .taskBtn:focus,
-.VipBtn:focus,
 .finishBtn:focus,
 .taskBtn:active:focus,
-.VipBtn:active:focus,
 .finishBtn:active:focus {
   outline: none !important;
   -webkit-outline: none !important;
@@ -148,8 +153,8 @@
     cursor: not-allowed;
 }
 .taskBtnIcon {
-    width: 27px;
-    height: auto;
+    width: 30px;
+    /* height: 19.35px; */
 }
 .emptyTask{
     width: auto;
