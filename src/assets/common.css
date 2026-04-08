@@ -1,6 +1,7 @@
 body, html {
 	height: 100%;
 	font-family: "微软雅黑","华文细黑",Arial, Helvetica, sans-serif;
+	/* overscroll-behavior: none; */
 }
 
 html, body, div, span, applet, object, iframe,
@@ -30,6 +31,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	user-select: none;
 }
 ol, ul {
 	list-style: none;
@@ -74,4 +76,11 @@ table {
 
 .pc-wrap {
 	max-width: 548px;
+}
+* {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.KGToast-content {
+  font-size: 1.5em;
+  line-height: 1.7em;
 }

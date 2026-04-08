@@ -1,6 +1,7 @@
+import kgLoad from '@kugou/kg-loading';
+
 const toastQueue = []
 export const Toast = (word, delay, noAutoHide = false) => {
-    // 防重复
     const preToast = document.getElementById('toastCover')
     if (preToast) {
         toastQueue.push({ word, delay, noAutoHide })
@@ -8,7 +9,7 @@ export const Toast = (word, delay, noAutoHide = false) => {
     }
 
     let toastCover = document.createElement('div'),
-    toastText = document.createElement('div')
+        toastText = document.createElement('div')
     delay = delay || 1500;
     toastCover.style.cssText = 'position:fixed;top:40%;width:100%;left:0;bottom:0;right:0;z-index:100000;text-align:center;';
     toastCover.id = 'toastCover';
@@ -25,8 +26,6 @@ export const Toast = (word, delay, noAutoHide = false) => {
         if (document.querySelector('#toastCover')) {
             toastCover.parentNode.removeChild(toastCover);
         }
-
-        // 显示队列里的其他toast
         showNextToast()
     }, delay)
 }
@@ -44,4 +43,66 @@ export const showQrcodeToast = () => {
     } else {
         return false
     }
+}
+
+export const loading = (() => {
+    let _loading = null;
+    return {
+        show(text) {
+            this.hide()
+            _loading = kgLoad({
+                msg: text || "请稍候....",
+                type: "toast",
+                delay: 400,
+                autoWarn: true,
+                popMode: true,
+                popConfig: {
+                    showBg: true,
+                    containerBgColor: "default",
+                    maskBgColor: "none",
+                },
+            });
+        },
+        hide() {
+            _loading && _loading.remove();
+            _loading = null
+        }
+    }
+})();
+
+// 【修改1】只保留1-5号奖品配置
+// 对应要求：“奖品也只剩四个，只有1-5号”
+export const prizeMap = {
+  '1': {
+    src: require('../assets/image/prizes/prize1.png'),
+    row: 1,
+    col: 1,
+  },
+  '2': {
+    src: require('../assets/image/prizes/prize2.png'),
+    row: 1,
+    col: 1,
+  },
+  '3': {
+    src: require('../assets/image/prizes/prize3.png'),
+    row: 1,
+    col: 1,
+  },
+  '4': {
+    src: require('../assets/image/prizes/prize4.png'),
+    row: 1,
+    col: 1,
+  },
+  '5': {
+    src: require('../assets/image/prizes/prize5.png'),
+    row: 1,
+    col: 1,
+  },
+}
+
+export function getQueryVariable (name) {
+  const url = window.location.href;
+  let reg = new RegExp('[?&]' + name + '=([^&#]+)');
+  let query = url.match(reg);
+  return query ? query[1] : null;
 }

@@ -1,0 +1,69 @@
+body{
+    height: 100vh;
+    overflow: hidden;
+}
+
+.wrap {
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 内容区域 */
+.content {
+    padding: 20px 30px 60px;
+}
+
+/* 规则段落 */
+.section {
+    margin-bottom: 40px;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+/* 段落标题 */
+.sectionTitle {
+    font-family: "PingFang SC", sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1.43;
+    color: #000000;
+    margin: 0 0 12px 0;
+}
+
+/* 段落内容 */
+.sectionContent {
+    font-family: "PingFang SC", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.67;
+    color: #333333;
+    margin: 0;
+}
+
+/* 内容列表项 */
+.sectionContent p {
+    margin: 0 0 8px 0;
+}
+
+.sectionContent p:last-child {
+    margin-bottom: 0;
+}
+
+.ruleBox{
+    overflow-y: auto;
+    height: 1410px;
+    width: 100%;
+}
+
+.ruleImg{
+    width: 100%;
+    display: block;
+}

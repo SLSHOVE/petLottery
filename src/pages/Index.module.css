@@ -1,0 +1,131 @@
+.wrap{
+  width: 100%;
+  height: 100vh;
+  background-color: #20A0F3;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.wrapLoginBg{
+  width: 100%;
+  height: 100vh;
+  background-color: #fff;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.emptyContent {
+    width: auto;
+    height: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    color: #333;
+}
+
+.emptyImage {
+    position: relative;
+    display: flex;
+    /* justify-content: center;
+    text-align: center; */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 50%;
+    width: 300px;
+    height: 300px;
+}
+
+.loginButton {
+    margin-top: 150px;
+    background-color: #1d81e1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    width: 560px;
+    height: 80px;
+    font-size: 40px;
+}
+
+.shareMask{
+    width: 720px;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    /* overflow: hidden; */
+    user-select: none;
+    touch-action: none;
+}
+
+.callButton {
+    bottom: 60px;
+    left:50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: auto;
+    position: absolute;
+    border: none;
+    background: none;
+}
+
+.callButtonImg {
+  width: 611px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* 共用父容器：相对定位，作为 Header/Tasks 的定位基准 */
+.overlapContainer {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headerLayer {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.tasksStage {
+  position: relative;
+  width: 100%;
+  margin-top: -511.68px;
+  z-index: 3;
+}
+
+.tasksLayer {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 678.719970703125px;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+.taskBg{
+  position: absolute;
+  width: 720px;
+  top: 40.32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+@media (max-width: 375px) {
+  .tasksStage {
+    margin-top: -480px;
+  }
+}

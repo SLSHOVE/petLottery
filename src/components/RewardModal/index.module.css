@@ -1,0 +1,208 @@
+/* 奖励弹窗样式 - 基于720px设计稿 */
+
+/* 遮罩层 */
+.modalMask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+  user-select: none;
+  touch-action: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 弹窗容器 */
+.modalContainer {
+  position: relative;
+  width: 660px;
+  height: 547px;
+  background: #FFFFFF;
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 16px;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 关闭按钮 - 位于右上角 */
+.closeBtn {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+}
+
+.closeBtn:active {
+  transform: scale(0.9);
+}
+
+/* 顶部区域 */
+.topSection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 660px;
+  height: 354px;
+  z-index: 3;
+}
+
+/* 顶部粉色渐变背景 */
+.topBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 660px;
+  height: 234px;
+  object-fit: cover;
+  border-radius: 16px 16px 0 0;
+}
+
+/* 装饰图案 */
+.decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 660px;
+  height: 234px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 动物图片容器 */
+.animalWrapper {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 404px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+.ribbonImg{
+  position: absolute; 
+  width: 360px; 
+  height: auto; 
+  object-fit: cover; 
+  z-index: 5; 
+}
+
+.animalSkinImg{
+  width: 286px;
+  height: auto;
+  /* top: 0; */
+  /* left: 0; */
+  z-index: 6;
+}
+
+/* 动物图片 - 支持两种尺寸自适应 */
+.animalImg {
+  width: 100%;
+  /* width: 50%; */
+  height: auto;
+  z-index: 6;
+}
+
+/* 白色背景内容区域 */
+.contentBg {
+  position: absolute;
+  top: 250px;
+  left: 0;
+  width: 660px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* 主标题 */
+.title {
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  width: 540px;
+  text-align: center;
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1em;
+  color: #000000;
+  white-space: nowrap;
+}
+
+/* 副标题 */
+.subtitle {
+  position: absolute;
+  top: 86px;
+  left: 60px;
+  width: 540px;
+  text-align: center;
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1em;
+  color: #000000;
+  opacity: 0.5;
+}
+
+/* 按钮 */
+.confirmBtn {
+  position: absolute;
+  top: 175px;
+  left: 30px;
+  width: 600px;
+  height: 80px;
+  background: #222;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.confirmBtn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 按钮文字 */
+.btnText {
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1em;
+  color: #FFFFFF;
+}

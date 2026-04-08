@@ -1,5 +1,6 @@
 import LightMobileCall from "@kugou/light-mobilecall"
 import getBaseInfo from "@kugou/get-base-info"
+import { getQueryVariable } from '../utils/common';
 
 import kgStatObj from "@kugou/stat";
 const kgStatPush = kgStatObj.kgStatPush;
@@ -47,6 +48,7 @@ export default async function mobileLog (biData, callback) {
     data.tv = (userInfo && userInfo.version) || 0;
     data.timestamp = Math.round(new Date().getTime() / 1000);
     // data.hreffrom = window._VO_ACT_ID_ || ''
+    data.hreffrom = getQueryVariable('hreffrom') || window._VO_ACT_ID_ || ''
     // data.dfid = (userInfo && userInfo.dfid) || 0; - 不需要上报dfid的
     console.log('埋点采集data',data)
     // 上报2：bi

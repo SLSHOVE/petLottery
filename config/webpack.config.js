@@ -29,7 +29,7 @@ let { useVpublicCache } = require('../package.json');
 const ROOT_PATH = process.cwd();
 const px2remOpts = {
   baseDpr: 2,             // base device pixel ratio (default: 2)
-  remUnit: 75,            // rem unit value (default: 75)
+  remUnit: 72,            // rem unit value (default: 75)
   remPrecision: 6,        // rem value precision (default: 6)
 }
 

@@ -1,0 +1,146 @@
+.wrap {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+}
+
+.statusBar {
+  width: 100%;
+}
+
+.titleBar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  /* background-color: #ccc; */
+}
+
+.rightBtns {
+  display: flex;
+  align-items: center; 
+  /* gap: 8px;  */
+}
+
+.arrowWrap {
+  display: inline-block;
+  vertical-align: middle;
+  width: 52px;
+  height: 52px;
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.moreWrap {
+  display: inline-block;
+  vertical-align: middle;
+  width: 52px;
+  height: 52px;
+  padding-right: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.title {
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 500;
+  color: #000;
+  pointer-events: none;
+}
+
+.shareWrap {
+  display: inline-block;
+  vertical-align: middle;
+  width: 52px;
+  height: 52px;
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.musicWrap {
+  display: inline-block;
+  vertical-align: middle;
+  width: 45px;
+  height: 45px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@-webkit-keyframes musicRotate {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes musicRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.placeholder {
+  width: 52px;
+  height: 52px;
+  padding-right: 20px;
+}
+
+@-webkit-keyframes musicRotate {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes musicRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 2. 播放动画类：必须带-webkit-前缀，否则安卓5不识别 */
+.musicRotating {
+  -webkit-animation: musicRotate 3s linear infinite; 
+  animation: musicRotate 3s linear infinite;
+  -webkit-transform-origin: center center; /* 确保旋转中心在图标正中间 */
+  transform-origin: center center;
+}
+
+/* 3. 暂停保留当前旋转角度 */
+.musicPaused {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+
+.music {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: block; 
+}

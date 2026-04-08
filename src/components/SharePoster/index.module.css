@@ -1,0 +1,121 @@
+/* 分享海报弹窗样式 - 基于720px设计稿 */
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: rgba(21, 21, 21, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 720px;
+}
+/* 关闭按钮 - 右上角 */
+.closeBtn {
+  position: absolute;
+  top: 92px;
+  right: 50px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+}
+.closeBtn svg {
+  width: 100%;
+  height: 100%;
+}
+/* Canvas展示区域 */
+.canvasWrapper {
+  position: relative;
+  width: 600px;
+  margin-top: 177px;
+  border-radius: 15px;
+  /* overflow: hidden; */
+}
+.canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 15px;
+}
+.canvasHidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+/* 底部分享区域 */
+.shareBottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 105px 0 50px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to bottom, transparent 0%, rgba(21, 21, 21, 0.6) 50%);
+  z-index: 10001;
+}
+/* 分享图标列表 */
+.shareList {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  /* gap: 19px; */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.shareList > * + * {
+  margin-left: 19px;
+}
+.shareList::-webkit-scrollbar {
+  display: none;
+}
+/* 单个分享项 */
+.shareItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 86px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* 分享图标 */
+.shareIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.shareIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* 分享文字 */
+.shareItem span {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+  white-space: nowrap;
+  text-align: center;
+}
