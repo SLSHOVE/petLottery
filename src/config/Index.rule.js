@@ -64,19 +64,19 @@ module.exports = {
         type: propTypes.img
     },
     iOS_VipUrl: {
-        name: 'iOS Vip链接',
+        name: 'iOS_Vip链接',
         type: propTypes.string
     },
     iOS_SvipUrl: {
-        name: 'iOS Svip链接',
+        name: 'iOS_Svip链接',
         type: propTypes.string
     },
     Android_VipUrl: {
-        name: 'Android Vip链接',
+        name: 'Android_Vip链接',
         type: propTypes.string
     },
     Android_SvipUrl: {
-        name: 'Android Svip链接',
+        name: 'Android_Svip链接',
         type: propTypes.string
     },
     petTaskUrl: {
@@ -85,6 +85,10 @@ module.exports = {
     },
     vipIcon: {
         name: 'vip按键图标',
+        type: propTypes.img
+    },
+    svipIcon: {
+        name: 'svip按键图标',
         type: propTypes.img
     },
     MILK_TEA_URL: {
