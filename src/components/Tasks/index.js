@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../../assets/common.css';
 import styles from './index.module.css';
-import { baseInfo, checkLogin, handleSharePic, openNewPage } from '../../utils/util';
+import { baseInfo, checkLogin, closePage, getUrlParams, handleSharePic, openNewPage } from '../../utils/util';
 import { getGlobalEvent } from '../../utils/eventEmitter';
 
 import { Toast } from '@cola/Toast';
@@ -106,21 +106,23 @@ const Tasks = (props) => {
       const isLow = await getKgClientVersion();
       if (isLow) {
         Toast.info({ content: '当前酷狗版本过低，请升级后再操作' });
-        return;
+        return false;
       }
       openNewPage(targetTab);
+      return true;
     } catch (error) {
       Toast.info({ content: '操作失败，请稍后重试' });
+      return false;
     }
   };
 
   const jumpToPetPage = async (taskType) => {
     const targetTab = taskType === 1 ? 0 : 1;
-    await openPetPage(targetTab);
+    return openPetPage(targetTab);
   };
 
   const handlePetChatTask = async () => {
-    await openPetPage(0);
+    return openPetPage(0);
   };
 
   const handleListenTask = () => {
@@ -247,6 +249,8 @@ const Tasks = (props) => {
 
   const handleTaskClick = async (task) => {
     const { isAwarded, taskType, taskId } = task;
+    const currentTaskType = Number(taskType);
+    const isFromPetH5 = getUrlParams('hreffrom') === '22';
 
     const isLoggedIn = await checkLogin();
     if (!isLoggedIn) return;
@@ -266,15 +270,26 @@ const Tasks = (props) => {
       ivar1: taskId
     });
 
-    switch (taskType) {
+    switch (currentTaskType) {
       case 1:
+        jumpToPetPage(currentTaskType);
+        break;
       case 2:
       case 4:
       case 7:
-        jumpToPetPage(taskType);
+        if (isFromPetH5) {
+          closePage();
+          break;
+        }
+        jumpToPetPage(currentTaskType);
         break;
       case 3:
-        handlePetChatTask();
+        {
+          const hasOpenedPetPage = await handlePetChatTask();
+          if (isFromPetH5 && hasOpenedPetPage) {
+            setTimeout(() => closePage(), 300);
+          }
+        }
         break;
       case 5:
       case 6:
