@@ -25,11 +25,13 @@ export async function checkLogin() {
 }
 
 export const closePage = () => {
-    if (LightMobileCall.isIOS) {
-        LightMobileCall.mobileCall(158, { type: 6 });
-    } else {
-        LightMobileCall.mobileCall(247, { count: 1, paramInfo: { type: 1 } });
-    }
+    setTimeout(() => {
+        if (LightMobileCall.isIOS) {
+            LightMobileCall.mobileCall(158, { type: 6 });
+        } else {
+            LightMobileCall.mobileCall(247, { count: 1, paramInfo: { type: 1 } });
+        }
+    }, 200);
 }
 
 export const isInClient = window.__debug ? true : LightMobileCall.isInClient() ? true : false;

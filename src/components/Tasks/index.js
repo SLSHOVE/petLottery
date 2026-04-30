@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../../assets/common.css';
 import styles from './index.module.css';
-import { baseInfo, checkLogin, closePage, getUrlParams, handleSharePic, openNewPage } from '../../utils/util';
+import { baseInfo, checkLogin, closePage, handleSharePic, openNewPage } from '../../utils/util';
 import { getGlobalEvent } from '../../utils/eventEmitter';
 
 import { Toast } from '@cola/Toast';
@@ -12,6 +12,7 @@ import titleImg from '../../assets/image/titleImg.png';
 import { lotteryTaskReward } from '../../assets/api';
 import mobileLog from '../../utils/mobileLog';
 import { apmLog } from '../../utils/apmLog';
+import { getQueryVariable } from '../../utils/common';
 
 const TASK_BTNTEXT_MAP = {
   1: '去领养',
@@ -106,23 +107,21 @@ const Tasks = (props) => {
       const isLow = await getKgClientVersion();
       if (isLow) {
         Toast.info({ content: '当前酷狗版本过低，请升级后再操作' });
-        return false;
+        return;
       }
       openNewPage(targetTab);
-      return true;
     } catch (error) {
       Toast.info({ content: '操作失败，请稍后重试' });
-      return false;
     }
   };
 
   const jumpToPetPage = async (taskType) => {
     const targetTab = taskType === 1 ? 0 : 1;
-    return openPetPage(targetTab);
+    await openPetPage(targetTab);
   };
 
   const handlePetChatTask = async () => {
-    return openPetPage(0);
+    await openPetPage(0);
   };
 
   const handleListenTask = () => {
@@ -250,7 +249,7 @@ const Tasks = (props) => {
   const handleTaskClick = async (task) => {
     const { isAwarded, taskType, taskId } = task;
     const currentTaskType = Number(taskType);
-    const isFromPetH5 = getUrlParams('hreffrom') === '22';
+    const isFromPetH5 = LightMobileCall.isIOS && getQueryVariable('hreffrom') === '22';
 
     const isLoggedIn = await checkLogin();
     if (!isLoggedIn) return;
@@ -284,12 +283,7 @@ const Tasks = (props) => {
         jumpToPetPage(currentTaskType);
         break;
       case 3:
-        {
-          const hasOpenedPetPage = await handlePetChatTask();
-          if (isFromPetH5 && hasOpenedPetPage) {
-            setTimeout(() => closePage(), 300);
-          }
-        }
+        await handlePetChatTask();
         break;
       case 5:
       case 6:
